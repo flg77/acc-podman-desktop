@@ -18,6 +18,7 @@ import * as extensionApi from '@podman-desktop/api';
 import { registerStackCommands } from './stack/commands';
 import { registerClusterTopology } from './cluster/topology';
 import { registerExamples } from './examples/registry';
+import { registerExamplesPanel } from './examples/panel';
 import { resolveAccPaths, type AccPaths } from './core/paths';
 import { consoleLogger } from './core/logger';
 
@@ -46,6 +47,7 @@ export async function activate(
     ...registerStackCommands({ paths, log }),
     ...registerClusterTopology({ paths, log }),
     ...registerExamples({ paths, log }),
+    ...registerExamplesPanel(paths, log),
   ];
 
   for (const d of disposables) {

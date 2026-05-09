@@ -33,13 +33,32 @@ the runtime repo.
 
 **Status:** ✅ landed.  37/37 tests green; tsc build clean.
 
-### PR #3 — Examples panel (proper UI)
+### PR #3 — Examples panel (proper UI) ✅
 
-- [ ] Replace command-only access with a left-nav panel that
-      lists each example with Run / Verify / Clean buttons.
-- [ ] Topic-slug input modal for the autoresearcher example.
-- [ ] Live tail of plan re-broadcasts inside the panel.
-- [ ] Surface `verify.sh` JSON output post-run.
+- [x] Replace command-only access with a left-nav panel that
+      lists each example with Run / Verify / Clean buttons
+      (`src/examples/panel.ts`).
+- [x] Topic-slug input modal for the autoresearcher example —
+      inline `<input>` per-card; passed as `--topic <slug>` to
+      `run.sh`.
+- [x] Live tail of stdout/stderr inside the panel via
+      `panel.webview.postMessage` events.
+- [x] Surface `verify.sh` JSON output post-run — reads
+      `runs/<topic>-<date>/.verification.json` via
+      `src/examples/verification.ts`, formats it, posts a
+      structured `type: 'verification'` message the panel
+      renders as a coloured headline + bullet details card.
+- [x] Stop button per running example (cooperative SIGTERM →
+      SIGKILL after 2 s).
+- [x] Pure-TS `runScript` wrapper (`src/examples/runner.ts`) —
+      reusable across panel + standalone commands; isolated
+      onChunk listener exceptions; cross-platform spawn (shell
+      mode on Windows for `.bat` / WSL `.sh`).
+- [x] Tests — 12 new cases across runner (4) + verification
+      (8); 49/49 across the full suite.
+
+**Status:** ✅ landed.  PR #4 (Role/Skill/MCP browser) builds
+on the same panel + message-passing pattern.
 
 ### PR #4 — Role / Skill / MCP browser
 
