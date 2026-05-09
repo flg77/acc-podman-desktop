@@ -104,12 +104,18 @@ on the same panel + message-passing pattern.
 
 **Status:** ✅ landed.  85/85 across the full suite; tsc clean.
 
-### PR #6 — Documentation closer
+### PR #6 — Documentation closer ✅
 
-- [ ] `docs/EXTENSION_implementation.md` — wire-protocol +
-      module reference.
-- [ ] `docs/DEMO_PD_extension.md` — operator walkthrough.
-- [ ] Update the runtime repo's `INDEX_*.md` to cross-link.
+- [x] `docs/EXTENSION_implementation.md` — wire-protocol +
+      module reference (~570 lines; per-PR module breakdown,
+      file map, test matrix, configuration table, anti-list).
+- [x] `docs/DEMO_PD_extension.md` — operator walkthrough
+      (six-phase: install → up → topology → demos → manifests →
+      teardown; anti-checks + troubleshooting matrix).
+- [ ] Update the runtime repo's `INDEX_*.md` to cross-link
+      (deferred to a follow-up PR on the runtime repo).
+
+**Status:** ✅ landed.  Closes v0.1.
 
 ## v0.2 — Cross-extension + governance dashboards (~2-3 weeks)
 
