@@ -66,6 +66,11 @@
         "command": "acc.examples.show",
         "title": "ACC: Open examples panel",
         "category": "ACC"
+      },
+      {
+        "command": "acc.manifests.show",
+        "title": "ACC: Browse roles, skills + MCPs",
+        "category": "ACC"
       }
     ]
   },
@@ -88,6 +93,7 @@
   },
   "dependencies": {
     "@msgpack/msgpack": "^3.0.0",
-    "nats": "^2.20.0"
+    "nats": "^2.20.0",
+    "yaml": "^2.8.4"
   }
 }
