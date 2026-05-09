@@ -68,10 +68,31 @@ jobs:
             org.opencontainers.image.revision=${{ github.sha }}
             org.opencontainers.image.version=${{ steps.meta.outputs.version }}
 
+      - name: Extract release notes from CHANGELOG.md
+        id: notes
+        run: |
+          VERSION="${{ steps.meta.outputs.version }}"
+          # Pull the section between `## [<version>]` and the next `## [`.
+          awk -v ver="$VERSION" '
+            /^## \[/ {
+              if (capture) exit
+              if ($0 ~ "## \\[" ver "\\]") { capture=1; next }
+            }
+            capture { print }
+          ' CHANGELOG.md > release-notes.md
+          {
+            echo "Install via Podman Desktop → Settings → Extensions → Install custom…"
+            echo
+            echo "Image: \`${{ steps.meta.outputs.tag }}\`"
+            echo
+            cat release-notes.md
+          } > final-notes.md
+          echo "path=final-notes.md" >> "$GITHUB_OUTPUT"
+
       - name: Draft GitHub Release
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           gh release create "$GITHUB_REF_NAME" \
             --title "${GITHUB_REF_NAME}" \
-            --notes "Install via Podman Desktop → Settings → Extensions → Install custom…\n\nImage: \`${{ steps.meta.outputs.tag }}\`"
+            --notes-file "${{ steps.notes.outputs.path }}"
