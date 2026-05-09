@@ -119,14 +119,28 @@ on the same panel + message-passing pattern.
 
 ## v0.2 — Cross-extension + governance dashboards (~2-3 weeks)
 
-### PR #7 — AI Lab Model Service auto-detect
+### PR #7 — AI Lab Model Service auto-detect ✅
 
-- [ ] Discover running AI Lab Model Services via PD's
-      extension-to-extension API (file upstream issue if not
-      exposed today).
-- [ ] One-click "Wire to deploy/.env as ACC_OPENAI_BASE_URL"
-      action — the headline cross-extension story.
-- [ ] Fall back to manual URL entry when AI Lab not running.
+- [x] Discover running AI Lab Model Services.  AI Lab does NOT
+      expose a typed extension API today (`activate()` returns
+      void; no public commands).  Primary path: hit AI Lab's
+      local REST server `GET http://localhost:10434/api/v1/ps`
+      (`src/ailab/discovery.ts`).
+- [x] Fallback path: `podman ps --format json` filtered to
+      containers labelled `ai-lab.model-id` (legacy
+      `ai-studio.model-id` also accepted).
+- [x] One-click "Wire to deploy/.env as ACC_OPENAI_BASE_URL"
+      action — patches `ACC_LLM_BACKEND=openai_compat`,
+      `ACC_OPENAI_BASE_URL=<url>`, `ACC_OPENAI_MODEL=<name>`
+      conservatively (preserves comments + unrelated lines;
+      updates existing assignments in place; never deletes).
+- [x] Manual URL entry input when AI Lab not running.
+- [x] Tests — 21 new cases across discovery (15) + wire-env (6).
+
+**Status:** ✅ landed.  106/106 across the full suite; tsc clean.
+File a feature request upstream for an
+`ai-lab.inferenceServer.list` typed command if a non-REST path
+becomes preferable later.
 
 ### PR #8 — Compliance dashboard
 

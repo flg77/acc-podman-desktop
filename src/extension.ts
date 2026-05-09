@@ -21,6 +21,7 @@ import { registerClusterTopology } from './cluster/topology';
 import { registerExamples } from './examples/registry';
 import { registerExamplesPanel } from './examples/panel';
 import { registerManifestBrowser } from './manifests/panel';
+import { registerAiLabPanel } from './ailab/panel';
 import { resolveAccPaths, type AccPaths } from './core/paths';
 import { consoleLogger } from './core/logger';
 
@@ -52,6 +53,7 @@ export async function activate(
     ...registerExamples({ paths, log }),
     ...registerExamplesPanel(paths, log),
     ...registerManifestBrowser(paths, log),
+    ...registerAiLabPanel(paths, log),
   ];
 
   for (const d of disposables) {

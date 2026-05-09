@@ -76,6 +76,11 @@
         "command": "acc.manifests.show",
         "title": "ACC: Browse roles, skills + MCPs",
         "category": "ACC"
+      },
+      {
+        "command": "acc.ailab.show",
+        "title": "ACC: Detect AI Lab Model Services",
+        "category": "ACC"
       }
     ]
   },
