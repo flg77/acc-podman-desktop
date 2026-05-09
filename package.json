@@ -2,7 +2,7 @@
   "name": "acc-podman-desktop",
   "displayName": "ACC — Agentic Cell Corpus",
   "description": "Manage governed multi-agent collectives from inside Podman Desktop. Stack provisioning, live cluster topology, role / skill / MCP browser, runnable example demos.",
-  "version": "0.0.1",
+  "version": "0.3.0",
   "icon": "icon.png",
   "publisher": "flg77",
   "license": "Apache-2.0",
