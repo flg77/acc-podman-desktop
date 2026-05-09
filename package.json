@@ -61,6 +61,11 @@
         "command": "acc.examples.autoresearcher",
         "title": "ACC: Run autoresearcher example",
         "category": "ACC"
+      },
+      {
+        "command": "acc.examples.show",
+        "title": "ACC: Open examples panel",
+        "category": "ACC"
       }
     ]
   },
