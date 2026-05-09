@@ -1,0 +1,87 @@
+{
+  "name": "acc-podman-desktop",
+  "displayName": "ACC — Agentic Cell Corpus",
+  "description": "Manage governed multi-agent collectives from inside Podman Desktop. Stack provisioning, live cluster topology, role / skill / MCP browser, runnable example demos.",
+  "version": "0.0.1",
+  "icon": "icon.png",
+  "publisher": "flg77",
+  "license": "Apache-2.0",
+  "engines": {
+    "podman-desktop": ">=1.8.0"
+  },
+  "main": "./dist/extension.js",
+  "contributes": {
+    "configuration": {
+      "title": "ACC",
+      "properties": {
+        "acc.repoPath": {
+          "type": "string",
+          "default": "",
+          "description": "Filesystem path to the agentic-cell-corpus repo. The extension calls acc-deploy.sh + acc-cli from this path. Empty = auto-detect via PATH."
+        },
+        "acc.collectiveId": {
+          "type": "string",
+          "default": "sol-01",
+          "description": "Default collective ID the extension subscribes to and submits plans against."
+        },
+        "acc.natsUrl": {
+          "type": "string",
+          "default": "nats://localhost:4222",
+          "description": "NATS connection used by the cluster topology panel."
+        }
+      }
+    },
+    "commands": [
+      {
+        "command": "acc.stack.up",
+        "title": "ACC: Bring stack up",
+        "category": "ACC"
+      },
+      {
+        "command": "acc.stack.down",
+        "title": "ACC: Stop stack",
+        "category": "ACC"
+      },
+      {
+        "command": "acc.stack.status",
+        "title": "ACC: Show stack status",
+        "category": "ACC"
+      },
+      {
+        "command": "acc.cluster.show",
+        "title": "ACC: Show cluster topology",
+        "category": "ACC"
+      },
+      {
+        "command": "acc.examples.coding-split",
+        "title": "ACC: Run coding-split example",
+        "category": "ACC"
+      },
+      {
+        "command": "acc.examples.autoresearcher",
+        "title": "ACC: Run autoresearcher example",
+        "category": "ACC"
+      }
+    ]
+  },
+  "scripts": {
+    "build": "tsc",
+    "watch": "tsc --watch",
+    "test": "vitest run",
+    "lint": "eslint src --ext .ts",
+    "format": "prettier --write \"src/**/*.ts\""
+  },
+  "devDependencies": {
+    "@podman-desktop/api": ">=1.8.0",
+    "@types/node": "^20.0.0",
+    "@typescript-eslint/eslint-plugin": "^7.0.0",
+    "@typescript-eslint/parser": "^7.0.0",
+    "eslint": "^8.0.0",
+    "prettier": "^3.0.0",
+    "typescript": "^5.4.0",
+    "vitest": "^1.4.0"
+  },
+  "dependencies": {
+    "nats": "^2.20.0"
+  }
+}

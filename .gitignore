@@ -1,0 +1,17 @@
+node_modules/
+dist/
+*.log
+.DS_Store
+.vscode/
+.idea/
+
+# Build artefacts
+*.tgz
+.turbo/
+
+# Coverage
+coverage/
+
+# Local secrets — never commit
+.env
+.env.local
