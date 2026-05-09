@@ -81,6 +81,11 @@
         "command": "acc.ailab.show",
         "title": "ACC: Detect AI Lab Model Services",
         "category": "ACC"
+      },
+      {
+        "command": "acc.compliance.show",
+        "title": "ACC: Open compliance dashboard",
+        "category": "ACC"
       }
     ]
   },
