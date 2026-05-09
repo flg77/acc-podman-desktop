@@ -142,11 +142,28 @@ File a feature request upstream for an
 `ai-lab.inferenceServer.list` typed command if a non-REST path
 becomes preferable later.
 
-### PR #8 — Compliance dashboard
+### PR #8 — Compliance dashboard ✅
 
-- [ ] OWASP violation log (mirrors TUI screen 3).
-- [ ] Oversight queue with approve / reject buttons.
-- [ ] Cat-A trigger summary chart per agent.
+- [x] OWASP violation log — `EVAL_OUTCOME` payload's
+      `owasp_violations[]` folded into a 50-entry rolling log
+      (`src/compliance/aggregator.ts`); per-LLM-code count table
+      always renders all ten OWASP-LLM rows so "no violations"
+      reads as a positive.
+- [x] Oversight queue with approve / reject buttons — sourced
+      from arbiter `HEARTBEAT.oversight_pending_items`; click
+      publishes `OVERSIGHT_DECISION` on
+      `acc.{cid}.oversight.{oversight_id}` (msgpack-of-JSON
+      wire-format parity with the TUI).
+- [x] Cat-A / Cat-B trigger summary per agent — `ALERT_ESCALATE`
+      reasons matched on `cat_a` / `cat-a` (parity with
+      `acc/tui/client.py:549`); per-agent counters surfaced on
+      heartbeats too.
+- [x] Collective compliance health bar — min over non-stale
+      agents (30 s window); colour buckets at 90/70/50%.
+- [x] Tests — 32 new cases across aggregator (17) + renderer (15);
+      138/138 across the full suite.
+
+**Status:** ✅ landed.
 
 ### PR #9 — Performance dashboard
 
