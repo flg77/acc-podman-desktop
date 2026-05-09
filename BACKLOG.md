@@ -18,17 +18,20 @@ the runtime repo.
 - [x] `tests/paths.test.ts` — vitest smoke
 - [x] `README.md` + `BACKLOG.md` + `LICENSE`
 
-### PR #2 — Cluster topology panel
+### PR #2 — Cluster topology panel ✅
 
-- [ ] NATS subscription via `nats` npm package against
-      `acc.{cid}.>`.
-- [ ] Webview-rendered topology — Svelte panel mirroring the
-      TUI prompt pane's cluster panel.
-- [ ] Per-cluster row → expand to show members + skill_in_use +
+- [x] NATS subscription via `nats` npm package against
+      `acc.{cid}.>` (`src/cluster/subscriber.ts`).
+- [x] Webview-rendered topology — pure-HTML render mirroring the
+      TUI prompt pane's cluster panel.  Svelte upgrade deferred
+      to PR #3.
+- [x] Per-cluster row showing members + skill_in_use +
       iteration_n (PR #41 fields).
-- [ ] 30 s grace window for finished clusters (parity with TUI).
-- [ ] Tests: subscription teardown, exception isolation per
-      callback, schema-drift tolerance.
+- [x] 30 s grace window for finished clusters (parity with TUI).
+- [x] Tests — 37 cases across aggregator + renderer + subscriber
+      + paths.
+
+**Status:** ✅ landed.  37/37 tests green; tsc build clean.
 
 ### PR #3 — Examples panel (proper UI)
 

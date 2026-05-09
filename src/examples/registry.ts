@@ -12,10 +12,11 @@ import * as path from 'node:path';
 import * as extensionApi from '@podman-desktop/api';
 
 import type { AccPaths } from '../core/paths';
+import type { Logger } from '../core/logger';
 
 interface RegisterArgs {
   paths: AccPaths | undefined;
-  log: extensionApi.OutputChannel;
+  log: Logger;
 }
 
 interface ExampleSpec {

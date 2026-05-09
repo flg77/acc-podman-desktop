@@ -82,6 +82,7 @@
     "vitest": "^1.4.0"
   },
   "dependencies": {
+    "@msgpack/msgpack": "^3.0.0",
     "nats": "^2.20.0"
   }
 }

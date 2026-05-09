@@ -19,13 +19,14 @@ import { registerStackCommands } from './stack/commands';
 import { registerClusterTopology } from './cluster/topology';
 import { registerExamples } from './examples/registry';
 import { resolveAccPaths, type AccPaths } from './core/paths';
+import { consoleLogger } from './core/logger';
 
 let disposables: extensionApi.Disposable[] = [];
 
 export async function activate(
   extensionContext: extensionApi.ExtensionContext,
 ): Promise<void> {
-  const log = extensionApi.window.createOutputChannel('ACC');
+  const log = consoleLogger('ACC');
   log.info('ACC extension activating…');
 
   const paths = await resolveAccPaths();
