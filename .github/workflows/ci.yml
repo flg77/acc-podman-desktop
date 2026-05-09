@@ -29,6 +29,6 @@ jobs:
 
       - name: Build OCI image (smoke test — does not push)
         run: |
-          docker build -t acc-podman-desktop:ci .
+          docker build -f Containerfile -t acc-podman-desktop:ci .
           docker image inspect acc-podman-desktop:ci \
             --format '{{ .Config.Labels }}' | tr ',' '\n'
