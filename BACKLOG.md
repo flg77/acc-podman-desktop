@@ -60,15 +60,26 @@ the runtime repo.
 **Status:** ✅ landed.  PR #4 (Role/Skill/MCP browser) builds
 on the same panel + message-passing pattern.
 
-### PR #4 — Role / Skill / MCP browser
+### PR #4 — Role / Skill / MCP browser ✅
 
-- [ ] Three list views populated from the runtime repo's
-      `roles/`, `skills/`, `mcps/`.
-- [ ] Click a role → render `role.md` + eval rubric + estimator
-      block.
-- [ ] "Open role.md in editor" button (defers to system editor).
-- [ ] Read-only — authoring stays in the operator's editor of
-      choice.
+- [x] Three list views populated from the runtime repo's
+      `roles/`, `skills/`, `mcps/` (`src/manifests/loader.ts`,
+      `src/manifests/panel.ts`).
+- [x] Click a role → render persona, domain, max_parallel_tasks,
+      estimator strategy, default_skills, allowed_skills,
+      max_skill_risk_level, default_mcps, allowed_mcps,
+      max_mcp_risk_level + per-file "Open in editor" buttons.
+- [x] "Open in editor" — `$EDITOR` first; falls back to
+      platform defaults (`open` / `start ""` / `xdg-open`).
+- [x] Read-only — the panel surfaces manifests; authoring
+      stays in the operator's editor.
+- [x] Tabs (Roles / Skills / MCPs) with live counters; risk
+      pills coloured per LOW/MEDIUM/HIGH/CRITICAL.
+- [x] YAML parsing via the `yaml` npm package; tolerant of
+      missing fields; unparseable manifests skipped silently.
+- [x] Tests — 12 new cases across the loader.
+
+**Status:** ✅ landed.  61/61 across the full suite; tsc clean.
 
 ### PR #5 — Stack provisioning panel (rich UI)
 
