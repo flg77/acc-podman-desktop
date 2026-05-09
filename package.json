@@ -86,6 +86,11 @@
         "command": "acc.compliance.show",
         "title": "ACC: Open compliance dashboard",
         "category": "ACC"
+      },
+      {
+        "command": "acc.performance.show",
+        "title": "ACC: Open performance dashboard",
+        "category": "ACC"
       }
     ]
   },

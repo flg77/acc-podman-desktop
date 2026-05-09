@@ -165,12 +165,27 @@ becomes preferable later.
 
 **Status:** ✅ landed.
 
-### PR #9 — Performance dashboard
+### PR #9 — Performance dashboard ✅
 
-- [ ] Per-skill / per-MCP `capability_stats` charts.
-- [ ] Per-agent token utilisation + drift score over time.
-- [ ] Cost-cap progress bar (PR #41 `tokens_used` /
-      `max_run_tokens`).
+- [x] Per-skill / per-MCP `capability_stats` table — folded
+      from `TASK_COMPLETE.invocations[]` into a `kind:target`
+      keyed map (`src/performance/aggregator.ts`); ok-rate
+      buckets at 95/80%; last_error column truncated.
+- [x] Per-agent table — `queue_depth`, `backpressure_state`,
+      `last_task_latency_ms`, `token_budget_utilization`,
+      `drift_score` + a client-side 32-reading sparkline (the
+      runtime publishes only point-in-time scalars; no time
+      series wire shape exists today).
+- [x] Cost-cap progress bar — `tokens_used` accumulated per
+      `plan_id` (or `cluster_id`, then `'global'`) from
+      `TASK_COMPLETE`; `max_run_tokens` captured from `PLAN`;
+      crit/warn/ok colour buckets.
+- [x] Latency percentiles header — p50/p90/p95/p99 over
+      non-stale agents (30 s window).
+- [x] Tests — 36 new cases across aggregator (19) +
+      renderer (17); 174/174 across the full suite.
+
+**Status:** ✅ landed.
 
 ### PR #10 — Optional Kaiden import
 
