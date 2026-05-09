@@ -1,10 +1,14 @@
+<p align="center">
+  <img src="icon.png" width="128" alt="ACC logo — six sub-agent cells around an arbiter">
+</p>
+
 # ACC — Agentic Cell Corpus — Podman Desktop extension
 
-> **Status: v0.2 closed.**  Eight left-nav panels (Stack, Cluster
-> Topology, Examples, Manifest Browser, AI Lab auto-detect,
-> Compliance, Performance, Kaiden import).  199 tests passing.
-> v0.3 is a maintenance milestone (publish flow, README polish,
-> settings hardening) — see [`BACKLOG.md`](BACKLOG.md).
+> **Status: v0.2 closed; v0.3 in flight.**  Eight left-nav panels
+> (Stack, Cluster Topology, Examples, Manifest Browser, AI Lab
+> auto-detect, Compliance, Performance, Kaiden import).
+> 199 tests passing.  v0.3 finishes publish flow + docs polish +
+> settings hardening — see [`BACKLOG.md`](BACKLOG.md).
 
 Manage governed multi-agent collectives from inside Podman
 Desktop.  Sibling extension to
@@ -89,6 +93,30 @@ npm run package          # uses podman; or `npm run package:docker`
 | `ACC: Open compliance dashboard` | OWASP-LLM table, oversight queue (Approve/Reject), Cat-A/B per-agent triggers. |
 | `ACC: Open performance dashboard` | Per-skill / per-MCP capability stats, drift sparkline, cost-cap progress. |
 | `ACC: Import MCP servers from Kaiden` | One-way import of `kdn` workspace.json with operator-supplied risk + allow-list. |
+
+## Panel screenshots
+
+Captures live under [`docs/screenshots/`](docs/screenshots/) — drop
+PNGs in there with the filenames below to populate this section.
+See `docs/screenshots/README.md` for the capture convention.
+
+<table>
+  <tr>
+    <td align="center" width="33%"><img src="docs/screenshots/stack.png" alt="Stack panel"><br><sub>Stack panel</sub></td>
+    <td align="center" width="33%"><img src="docs/screenshots/cluster.png" alt="Cluster topology"><br><sub>Cluster topology</sub></td>
+    <td align="center" width="33%"><img src="docs/screenshots/examples.png" alt="Examples"><br><sub>Examples · verification readout</sub></td>
+  </tr>
+  <tr>
+    <td align="center"><img src="docs/screenshots/manifests.png" alt="Manifest browser"><br><sub>Manifest browser</sub></td>
+    <td align="center"><img src="docs/screenshots/ailab.png" alt="AI Lab auto-detect"><br><sub>AI Lab auto-detect</sub></td>
+    <td align="center"><img src="docs/screenshots/compliance.png" alt="Compliance"><br><sub>Compliance dashboard</sub></td>
+  </tr>
+  <tr>
+    <td align="center"><img src="docs/screenshots/performance.png" alt="Performance"><br><sub>Performance dashboard</sub></td>
+    <td align="center"><img src="docs/screenshots/kaiden.png" alt="Kaiden import"><br><sub>Kaiden import (one-way)</sub></td>
+    <td></td>
+  </tr>
+</table>
 
 ## Repository layout (v0.2)
 

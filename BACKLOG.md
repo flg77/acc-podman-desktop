@@ -248,12 +248,24 @@ rather than adding new surfaces.
 **Status:** ✅ landed.  First release tag (`v0.2.0`) cuts the
 GHCR image whenever the operator pushes one.
 
-### PR #12 — README + icon + screenshots
+### PR #12 — README + icon + screenshots ✅
 
-- [ ] Real `icon.png` (current is a placeholder).
-- [ ] README with screenshot of every left-nav panel.
-- [ ] Cross-link from runtime repo `INDEX_*.md` (deferred from
-      PR #6).
+- [x] Real `icon.png` — 256×256 ACC mark; six sub-agent cells
+      around a centre arbiter, on the webview-bg purple.
+      Replaces the 220-byte blue-dot placeholder from PR #11.
+- [x] README — embeds the icon inline (top of file); panel
+      screenshots section structured as a 3×3 image grid keyed
+      to filenames under `docs/screenshots/`.
+- [x] `docs/screenshots/README.md` — capture conventions
+      (resolution, trim guidance, filename map) so anyone with
+      a working PD install can drop PNGs in.
+- [x] Runtime-repo `INDEX_*.md` cross-link — landed as a
+      separate PR on `agentic-cell-corpus` (closes the deferral
+      from v0.1 PR #6).
+
+**Status:** ✅ landed.  Captures land opportunistically as the
+demo gets re-run; the README structure already references their
+filenames.
 
 ### PR #13 — Settings hardening
 
