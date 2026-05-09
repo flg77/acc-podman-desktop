@@ -1,0 +1,19 @@
+# Keep the OCI image lean — only ship the built extension surface.
+node_modules
+src
+tests
+docs
+.github
+.git
+.gitignore
+.dockerignore
+BACKLOG.md
+tsconfig.json
+vitest.config.ts
+package-lock.json
+*.tgz
+*.log
+.DS_Store
+.vscode
+.idea
+coverage

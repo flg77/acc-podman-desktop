@@ -221,15 +221,32 @@ Both v0.1 and v0.2 are closed.  v0.3 is a smaller maintenance
 milestone focused on getting the extension into operator hands
 rather than adding new surfaces.
 
-### PR #11 — Publish flow
+### PR #11 — Publish flow ✅
 
-- [ ] Choose a distribution channel — Podman Desktop's
-      extension catalogue, GitHub Releases, or both.  File the
-      catalogue PR upstream once package metadata is camera-ready.
-- [ ] `npm run package` script that produces a tarball / OCI
-      image PD can install from a folder/URL.
-- [ ] CI workflow — typecheck + test + package on every PR;
-      release artefact on tag push.
+- [x] OCI distribution chosen — PD only accepts an OCI image
+      reference for "Install custom…", not tarballs.  Catalogue
+      submission to
+      [podman-desktop-catalog](https://github.com/podman-desktop/podman-desktop-catalog)
+      deferred to PR #12 (waiting on README + screenshots).
+- [x] `Containerfile` — `FROM scratch` + required PD labels
+      (`io.podman-desktop.api.version`, OCI image labels);
+      ships only `package.json`, `icon.png`, `LICENSE`,
+      `README.md`, `dist/`.  `.dockerignore` prunes the rest.
+- [x] `npm run package` (podman) + `npm run package:docker`
+      scripts that build + tag a local image.
+- [x] `.github/workflows/ci.yml` — fixed (was using pnpm with
+      no lockfile); now `npm ci` + tsc + vitest + OCI build
+      smoke on every push/PR.
+- [x] `.github/workflows/release.yml` — on `v*` tag push,
+      builds the image, pushes to
+      `ghcr.io/<owner>/acc-podman-desktop:<version>` + `:latest`,
+      creates a GitHub Release.
+- [x] Placeholder `icon.png` (real one lands in PR #12).
+- [x] README rewritten — released-build install via GHCR + dev
+      install via folder OR local OCI; v0.2 command table.
+
+**Status:** ✅ landed.  First release tag (`v0.2.0`) cuts the
+GHCR image whenever the operator pushes one.
 
 ### PR #12 — README + icon + screenshots
 
