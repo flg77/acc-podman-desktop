@@ -33,6 +33,11 @@
     },
     "commands": [
       {
+        "command": "acc.stack.show",
+        "title": "ACC: Open stack panel",
+        "category": "ACC"
+      },
+      {
         "command": "acc.stack.up",
         "title": "ACC: Bring stack up",
         "category": "ACC"

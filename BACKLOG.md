@@ -81,15 +81,28 @@ on the same panel + message-passing pattern.
 
 **Status:** ✅ landed.  61/61 across the full suite; tsc clean.
 
-### PR #5 — Stack provisioning panel (rich UI)
+### PR #5 — Stack provisioning panel (rich UI) ✅
 
-- [ ] Replace the command-line `acc.stack.*` actions with a
-      first-class panel: live container status, profile toggles
-      (TUI / coding-split / autoresearcher / mcp-echo), inline
-      `deploy/.env` editor with the `env/use.sh` preset
-      dropdown.
-- [ ] One-click "rebuild" with the runtime repo's
-      `acc-deploy.sh rebuild` flow.
+- [x] First-class panel replacing command-only access for
+      `acc-deploy.sh up / down / rebuild / status`
+      (`src/stack/panel.ts`).
+- [x] Live container status — `podman ps --format json`
+      filtered to `acc-*`, refreshed every 5 s
+      (`src/stack/status.ts`).
+- [x] Profile toggles for TUI / CODING_SPLIT / AUTORESEARCHER /
+      MCP_ECHO / DETACH; "Save profiles" patches `deploy/.env`
+      conservatively (preserves comments, never deletes
+      unrelated lines).
+- [x] Inline `deploy/.env` editor with the preset dropdown
+      that mirrors `env/use.sh` exactly (existing `deploy/.env`
+      backed up as `.bak` before overwrite).
+- [x] One-click rebuild flow.
+- [x] Live stdout/stderr tail of every command in the panel's
+      log view; per-command Stop button (cooperative SIGTERM).
+- [x] Tests — 24 new cases across `env-file` (18) +
+      `stack-status` (6).
+
+**Status:** ✅ landed.  85/85 across the full suite; tsc clean.
 
 ### PR #6 — Documentation closer
 

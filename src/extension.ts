@@ -16,6 +16,7 @@
 import * as extensionApi from '@podman-desktop/api';
 
 import { registerStackCommands } from './stack/commands';
+import { registerStackPanel } from './stack/panel';
 import { registerClusterTopology } from './cluster/topology';
 import { registerExamples } from './examples/registry';
 import { registerExamplesPanel } from './examples/panel';
@@ -46,6 +47,7 @@ export async function activate(
 
   disposables = [
     ...registerStackCommands({ paths, log }),
+    ...registerStackPanel(paths, log),
     ...registerClusterTopology({ paths, log }),
     ...registerExamples({ paths, log }),
     ...registerExamplesPanel(paths, log),
