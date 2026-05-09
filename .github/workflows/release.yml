@@ -1,0 +1,77 @@
+name: Release
+
+# Triggered by `git tag v0.x.y && git push --tags`.
+#
+# Builds the OCI image at the tagged commit, pushes it to GHCR
+# (ghcr.io/flg77/acc-podman-desktop:<tag> + :latest), and creates
+# a GitHub Release pointing operators at the canonical install
+# command:
+#
+#   podman pull ghcr.io/flg77/acc-podman-desktop:<tag>
+#
+# Then in Podman Desktop: Settings → Extensions → Install custom…
+# → paste the image reference.
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      packages: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build the extension
+        run: npm run build
+
+      - name: Compute version + tags
+        id: meta
+        run: |
+          VERSION="${GITHUB_REF_NAME#v}"
+          IMAGE="ghcr.io/${GITHUB_REPOSITORY_OWNER,,}/acc-podman-desktop"
+          echo "version=$VERSION"             >> "$GITHUB_OUTPUT"
+          echo "image=$IMAGE"                 >> "$GITHUB_OUTPUT"
+          echo "tag=$IMAGE:$VERSION"          >> "$GITHUB_OUTPUT"
+          echo "latest=$IMAGE:latest"         >> "$GITHUB_OUTPUT"
+
+      - name: Login to GHCR
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build + push OCI image
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          push: true
+          tags: |
+            ${{ steps.meta.outputs.tag }}
+            ${{ steps.meta.outputs.latest }}
+          labels: |
+            org.opencontainers.image.source=https://github.com/${{ github.repository }}
+            org.opencontainers.image.revision=${{ github.sha }}
+            org.opencontainers.image.version=${{ steps.meta.outputs.version }}
+
+      - name: Draft GitHub Release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh release create "$GITHUB_REF_NAME" \
+            --title "${GITHUB_REF_NAME}" \
+            --notes "Install via Podman Desktop → Settings → Extensions → Install custom…\n\nImage: \`${{ steps.meta.outputs.tag }}\`"

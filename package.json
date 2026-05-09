@@ -109,7 +109,9 @@
     "watch": "tsc --watch",
     "test": "vitest run",
     "lint": "eslint src --ext .ts",
-    "format": "prettier --write \"src/**/*.ts\""
+    "format": "prettier --write \"src/**/*.ts\"",
+    "package": "npm run build && podman build -t acc-podman-desktop:dev .",
+    "package:docker": "npm run build && docker build -t acc-podman-desktop:dev ."
   },
   "devDependencies": {
     "@podman-desktop/api": ">=1.8.0",
