@@ -187,16 +187,33 @@ becomes preferable later.
 
 **Status:** ✅ landed.
 
-### PR #10 — Optional Kaiden import
+### PR #10 — Optional Kaiden import ✅
 
-- [ ] Detect Kaiden's local MCP registry file under the user's
-      profile dir.
-- [ ] "Import as ACC MCP manifest" action that writes
-      `mcps/<server_id>/mcp.yaml` with operator-supplied risk
-      level + allow-list.
-- [ ] One-way only — never reverse-trust Kaiden's loose model.
-- [ ] Optional + not mandatory; v0.2 surfaces the option only
-      when Kaiden's registry file is detectable.
+- [x] Detect `kdn` workspace registry — `<workspace>/.kaiden/
+      workspace.json` is the documented stable shape; we walk
+      from `acc.repoPath` up six levels then fall back to cwd
+      and home (`src/kaiden/discovery.ts`).  Operator override
+      via `acc.kaidenWorkspacePath` setting.
+- [x] Pasted-JSON fallback — covers the Kaiden GUI case (its
+      on-disk format is undocumented).
+- [x] "Import as ACC MCP manifest" — writes
+      `mcps/<name>/mcp.yaml` with operator-supplied
+      `risk_level` + `allowed_tools[]` + optional
+      `manifestName` override (`src/kaiden/import.ts`).
+      Pure-fn `buildMcpYaml` for testability.
+- [x] One-way + secrets stripped — env-var values + HTTP-header
+      values are NEVER carried over.  We surface only the
+      *names* with a comment block instructing the operator to
+      wire them into `deploy/.env` themselves.  Kaiden's loose
+      "no per-tool gating, no risk classification" model never
+      reverse-trusts ACC's manifests.
+- [x] Optional surface — panel + command available always; the
+      panel reports plainly when no workspace is detected and
+      offers the paste path.
+- [x] Tests — 25 new cases across discovery (12) +
+      import / YAML build (13); 199/199 across the full suite.
+
+**Status:** ✅ landed.  Closes v0.2.
 
 ## Out of scope for this extension (forever)
 
