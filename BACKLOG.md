@@ -287,14 +287,30 @@ filenames.
 
 **Status:** ✅ landed.
 
-### PR #14 — Prompt pane bridge (stretch)
+### PR #14 — Prompt pane bridge ✅
 
-- [ ] Mirror the runtime's TUI Prompt screen (TUI screen 7) as
-      a webview that publishes TASK_ASSIGN with optional
-      `target_agent_id` and renders the streaming TASK_COMPLETE
-      back into the panel.
-- [ ] Useful operator surface for ad-hoc dispatch without
-      dropping into the TUI.
+- [x] `src/prompt/channel.ts` — pure-fn `buildTaskAssign()`
+      emits the exact wire envelope the TUI's screen 7 + the
+      autoresearcher arbiter expect (`acc.{cid}.task` subject;
+      msgpack-of-utf8-JSON-bytes frame; `from_agent="pd-extension"`;
+      `target_agent_id` attached only when non-blank);
+      `correlateTaskComplete` + `correlateTaskProgress` extract
+      the matching reply by `task_id`.
+- [x] `PromptChannel` class — connect / send / close lifecycle;
+      one NATS connection serves both the task subject and the
+      progress subject; per-task listeners keyed by task_id;
+      configurable timeout (default 120 s).
+- [x] `src/prompt/panel.ts` — left-nav webview with form
+      (target_role, optional target_agent_id, optional task_type,
+      prompt) + transcript pane.  Each turn renders streaming
+      progress as a single live "▸ thinking…" line, then settles
+      into a coloured complete/blocked/error card on
+      TASK_COMPLETE.  Cmd/Ctrl+Enter sends.  Panic-stop
+      registered.
+- [x] Tests — 15 new cases on the channel pure-fn surface;
+      235/235 across the full suite; tsc clean.
+
+**Status:** ✅ landed.  Closes v0.3.
 
 ## Out of scope for this extension (forever)
 

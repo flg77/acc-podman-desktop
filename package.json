@@ -103,6 +103,11 @@
         "category": "ACC"
       },
       {
+        "command": "acc.prompt.show",
+        "title": "ACC: Open prompt pane (ad-hoc dispatch)",
+        "category": "ACC"
+      },
+      {
         "command": "acc.panicStop",
         "title": "ACC: Panic stop — disconnect every NATS panel",
         "category": "ACC"

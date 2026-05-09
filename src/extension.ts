@@ -25,6 +25,7 @@ import { registerAiLabPanel } from './ailab/panel';
 import { registerCompliancePanel } from './compliance/panel';
 import { registerPerformancePanel } from './performance/panel';
 import { registerKaidenPanel } from './kaiden/panel';
+import { registerPromptPanel } from './prompt/panel';
 import { resolveAccPaths, type AccPaths } from './core/paths';
 import { consoleLogger } from './core/logger';
 import { panicRegistry } from './core/panic';
@@ -108,6 +109,7 @@ export async function activate(
     ...registerCompliancePanel(paths, log),
     ...registerPerformancePanel(paths, log),
     ...registerKaidenPanel(paths, log),
+    ...registerPromptPanel(paths, log),
     panicStopCmd,
     ...(onConfigChange ? [onConfigChange] : []),
   ];
