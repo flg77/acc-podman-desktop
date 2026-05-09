@@ -28,6 +28,11 @@
           "type": "string",
           "default": "nats://localhost:4222",
           "description": "NATS connection used by the cluster topology panel."
+        },
+        "acc.kaidenWorkspacePath": {
+          "type": "string",
+          "default": "",
+          "description": "Override path to Kaiden's workspace.json. Empty = auto-detect under repoPath / cwd / home."
         }
       }
     },
@@ -90,6 +95,11 @@
       {
         "command": "acc.performance.show",
         "title": "ACC: Open performance dashboard",
+        "category": "ACC"
+      },
+      {
+        "command": "acc.kaiden.show",
+        "title": "ACC: Import MCP servers from Kaiden",
         "category": "ACC"
       }
     ]

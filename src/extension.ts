@@ -24,6 +24,7 @@ import { registerManifestBrowser } from './manifests/panel';
 import { registerAiLabPanel } from './ailab/panel';
 import { registerCompliancePanel } from './compliance/panel';
 import { registerPerformancePanel } from './performance/panel';
+import { registerKaidenPanel } from './kaiden/panel';
 import { resolveAccPaths, type AccPaths } from './core/paths';
 import { consoleLogger } from './core/logger';
 
@@ -58,6 +59,7 @@ export async function activate(
     ...registerAiLabPanel(paths, log),
     ...registerCompliancePanel(paths, log),
     ...registerPerformancePanel(paths, log),
+    ...registerKaidenPanel(paths, log),
   ];
 
   for (const d of disposables) {
