@@ -101,6 +101,11 @@
         "command": "acc.kaiden.show",
         "title": "ACC: Import MCP servers from Kaiden",
         "category": "ACC"
+      },
+      {
+        "command": "acc.panicStop",
+        "title": "ACC: Panic stop — disconnect every NATS panel",
+        "category": "ACC"
       }
     ]
   },

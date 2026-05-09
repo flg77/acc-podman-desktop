@@ -30,6 +30,7 @@ import { encode as msgpackEncode } from '@msgpack/msgpack';
 
 import type { AccPaths } from '../core/paths';
 import type { Logger } from '../core/logger';
+import { panicRegistry } from '../core/panic';
 import { ComplianceAggregator } from './aggregator';
 import { decodeFrame } from '../cluster/subscriber';
 import {
@@ -49,6 +50,7 @@ interface PanelState {
   cid: string;
   natsUrl: string;
   refreshScheduled: boolean;
+  panicHandle: { unregister: () => void } | undefined;
 }
 
 
@@ -121,7 +123,12 @@ async function openPanel(
     cid,
     natsUrl,
     refreshScheduled: false,
+    panicHandle: undefined,
   };
+  state.panicHandle = panicRegistry.register({
+    label: `compliance(${cid})`,
+    dispose: () => teardown(state),
+  });
 
   panel.webview.onDidReceiveMessage(async (raw: unknown) => {
     if (typeof raw !== 'object' || raw === null) {
@@ -269,6 +276,10 @@ async function publishOversightDecision(
 
 
 async function teardown(state: PanelState): Promise<void> {
+  if (state.panicHandle !== undefined) {
+    state.panicHandle.unregister();
+    state.panicHandle = undefined;
+  }
   if (state.sub !== undefined) {
     try {
       state.sub.unsubscribe();

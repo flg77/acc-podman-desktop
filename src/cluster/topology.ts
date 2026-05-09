@@ -19,6 +19,7 @@ import * as extensionApi from '@podman-desktop/api';
 
 import type { AccPaths } from '../core/paths';
 import type { Logger } from '../core/logger';
+import { panicRegistry } from '../core/panic';
 import { TopologyAggregator } from './aggregator';
 import { renderSnapshot } from './renderer';
 import { startSubscriber, type SubscriberHandle } from './subscriber';
@@ -142,6 +143,25 @@ async function openTopologyPanel(
         error: (m) => log.error(m),
       },
     });
+    // Wire panic-stop — torn down on natural panel dispose too.
+    const handle = panicRegistry.register({
+      label: `cluster(${cid})`,
+      dispose: async () => {
+        if (state.subscriber !== undefined) {
+          await state.subscriber.stop();
+          state.subscriber = undefined;
+        }
+        if (state.webviewPanel !== undefined) {
+          try {
+            state.webviewPanel.dispose();
+          } catch {
+            // best-effort
+          }
+          state.webviewPanel = undefined;
+        }
+      },
+    });
+    panel.onDidDispose(() => handle.unregister());
   }
 
   // 4. Drive a periodic re-render so the 30 s grace-window filter
