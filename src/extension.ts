@@ -27,6 +27,11 @@ import { registerPerformancePanel } from './performance/panel';
 import { registerKaidenPanel } from './kaiden/panel';
 import { resolveAccPaths, type AccPaths } from './core/paths';
 import { consoleLogger } from './core/logger';
+import { panicRegistry } from './core/panic';
+import {
+  validateNatsUrl,
+  validateRepoPath,
+} from './core/health';
 
 let disposables: extensionApi.Disposable[] = [];
 
@@ -49,6 +54,49 @@ export async function activate(
     log.info(`acc-cli: ${paths.cliBinary}`);
   }
 
+  // Settings hardening — validate acc.repoPath + acc.natsUrl on
+  // activation and on every change, surface a toast on failure.
+  await runSettingsHealthCheck(log);
+  const onConfigChange = extensionApi.configuration.onDidChangeConfiguration?.(
+    async (e) => {
+      // PD's `ConfigurationChangeEvent` is shape-compatible with VS
+      // Code's; we re-check on any acc.* change.
+      if (
+        e === undefined ||
+        typeof (e as { affectsConfiguration?: unknown }).affectsConfiguration !== 'function' ||
+        (e as { affectsConfiguration: (s: string) => boolean }).affectsConfiguration('acc')
+      ) {
+        await runSettingsHealthCheck(log);
+      }
+    },
+  );
+
+  // Panic-stop command — disposes every panel that registered a
+  // tear-down handle (NATS subscriptions + spawned children).
+  const panicStopCmd = extensionApi.commands.registerCommand(
+    'acc.panicStop',
+    async () => {
+      const labels = panicRegistry.labels();
+      if (labels.length === 0) {
+        extensionApi.window.showInformationMessage(
+          'ACC panic stop: nothing to tear down.',
+        );
+        return;
+      }
+      const result = await panicRegistry.tearDownAll(log);
+      const summary = result.tornDown.length > 0
+        ? `Tore down ${result.tornDown.length}: ${result.tornDown.join(', ')}`
+        : 'Nothing to tear down.';
+      if (result.errors.length > 0) {
+        extensionApi.window.showWarningMessage(
+          `${summary}; errors: ${result.errors.join(' | ')}`,
+        );
+      } else {
+        extensionApi.window.showInformationMessage(`ACC panic stop: ${summary}`);
+      }
+    },
+  );
+
   disposables = [
     ...registerStackCommands({ paths, log }),
     ...registerStackPanel(paths, log),
@@ -60,6 +108,8 @@ export async function activate(
     ...registerCompliancePanel(paths, log),
     ...registerPerformancePanel(paths, log),
     ...registerKaidenPanel(paths, log),
+    panicStopCmd,
+    ...(onConfigChange ? [onConfigChange] : []),
   ];
 
   for (const d of disposables) {
@@ -79,5 +129,32 @@ export async function deactivate(): Promise<void> {
   }
   disposables = [];
 }
+
+async function runSettingsHealthCheck(log: ReturnType<typeof consoleLogger>): Promise<void> {
+  const config = extensionApi.configuration.getConfiguration('acc');
+  const repoPath = config.get<string>('repoPath') ?? '';
+  const natsUrl = config.get<string>('natsUrl') ?? '';
+
+  const repo = await validateRepoPath(repoPath);
+  if (!repo.ok) {
+    log.warn(`config: acc.repoPath invalid — ${repo.reason}`);
+    extensionApi.window.showWarningMessage(
+      `ACC repoPath: ${repo.reason}.  Set "acc.repoPath" to your agentic-cell-corpus checkout.`,
+    );
+  } else {
+    log.info(`config: acc.repoPath ok — ${repo.reason}`);
+  }
+
+  const nats = validateNatsUrl(natsUrl);
+  if (!nats.ok) {
+    log.warn(`config: acc.natsUrl invalid — ${nats.reason}`);
+    extensionApi.window.showWarningMessage(
+      `ACC natsUrl: ${nats.reason}.  Expected scheme://host:port (nats:// / tls:// / ws://).`,
+    );
+  } else {
+    log.info(`config: acc.natsUrl ok — ${nats.reason}`);
+  }
+}
+
 
 export type { AccPaths };

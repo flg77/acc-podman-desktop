@@ -267,14 +267,25 @@ GHCR image whenever the operator pushes one.
 demo gets re-run; the README structure already references their
 filenames.
 
-### PR #13 — Settings hardening
+### PR #13 — Settings hardening ✅
 
-- [ ] Validate `acc.repoPath` on save — surface a warning when
-      `acc-deploy.sh` is missing.
-- [ ] Validate `acc.natsUrl` shape; default-on connection test
-      surfaced in the Stack panel header.
-- [ ] Per-panel "panic stop" — disconnect NATS / kill spawned
-      processes in one click.
+- [x] `validateRepoPath()` — runs on activation + on every
+      `acc.*` config change; checks for `acc-deploy.sh` +
+      `deploy/podman-compose.yml`; PD warning toast on failure.
+      Empty path treated as "auto-detect mode".
+- [x] `validateNatsUrl()` — pure shape check (scheme + host);
+      accepts `nats://` / `tls://` / `ws://` / `wss://`.
+      `probeNats()` (live network probe) shipped but not yet
+      wired into a panel header — that's a follow-up.
+- [x] Panic-stop registry — every panel that holds a NATS
+      connection (Cluster, Compliance, Performance) registers a
+      tear-down handle on open + unregisters on natural dispose.
+      `acc.panicStop` command iterates the registry and tears
+      everything down with a single click.
+- [x] Tests — 21 new cases across health (14) + panic (7);
+      220/220 across the full suite; tsc clean.
+
+**Status:** ✅ landed.
 
 ### PR #14 — Prompt pane bridge (stretch)
 
