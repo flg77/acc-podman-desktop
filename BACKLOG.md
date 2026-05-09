@@ -215,6 +215,47 @@ becomes preferable later.
 
 **Status:** ✅ landed.  Closes v0.2.
 
+## v0.3 — Distribution + polish (sketch)
+
+Both v0.1 and v0.2 are closed.  v0.3 is a smaller maintenance
+milestone focused on getting the extension into operator hands
+rather than adding new surfaces.
+
+### PR #11 — Publish flow
+
+- [ ] Choose a distribution channel — Podman Desktop's
+      extension catalogue, GitHub Releases, or both.  File the
+      catalogue PR upstream once package metadata is camera-ready.
+- [ ] `npm run package` script that produces a tarball / OCI
+      image PD can install from a folder/URL.
+- [ ] CI workflow — typecheck + test + package on every PR;
+      release artefact on tag push.
+
+### PR #12 — README + icon + screenshots
+
+- [ ] Real `icon.png` (current is a placeholder).
+- [ ] README with screenshot of every left-nav panel.
+- [ ] Cross-link from runtime repo `INDEX_*.md` (deferred from
+      PR #6).
+
+### PR #13 — Settings hardening
+
+- [ ] Validate `acc.repoPath` on save — surface a warning when
+      `acc-deploy.sh` is missing.
+- [ ] Validate `acc.natsUrl` shape; default-on connection test
+      surfaced in the Stack panel header.
+- [ ] Per-panel "panic stop" — disconnect NATS / kill spawned
+      processes in one click.
+
+### PR #14 — Prompt pane bridge (stretch)
+
+- [ ] Mirror the runtime's TUI Prompt screen (TUI screen 7) as
+      a webview that publishes TASK_ASSIGN with optional
+      `target_agent_id` and renders the streaming TASK_COMPLETE
+      back into the panel.
+- [ ] Useful operator surface for ad-hoc dispatch without
+      dropping into the TUI.
+
 ## Out of scope for this extension (forever)
 
 * Authoring `role.md` from scratch in a built-in editor.  Defer
