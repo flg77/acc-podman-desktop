@@ -327,4 +327,4 @@ filenames.
 * The strategic plan in the operator's Obsidian:
   `ACC Podman Desktop Plan.md`.
 * The runtime repo:
-  [agentic-cell-corpus](https://github.com/flg77/agentic-cell-corpus).
+  [agentic-cell-corpus](https://github.com/flg77/acc).

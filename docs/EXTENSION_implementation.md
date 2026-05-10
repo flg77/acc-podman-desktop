@@ -27,7 +27,7 @@ plan numbering follows BACKLOG.md.
 
 ## Why this extension
 
-The ACC runtime ([agentic-cell-corpus](https://github.com/flg77/agentic-cell-corpus))
+The ACC runtime ([agentic-cell-corpus](https://github.com/flg77/acc))
 is operated today via a Textual TUI + `acc-cli`. Both work
 flawlessly on the agent host, including over SSH. They do NOT live
 inside the same drawer Red Hat developers already open daily —
@@ -566,7 +566,7 @@ See [`BACKLOG.md`](../BACKLOG.md) for the full v0.2 plan:
 * [`README.md`](../README.md) — operator-facing intro.
 * [`docs/DEMO_PD_extension.md`](DEMO_PD_extension.md) — phase-by-phase
   walkthrough.
-* [`flg77/agentic-cell-corpus`](https://github.com/flg77/agentic-cell-corpus)
+* [`flg77/acc`](https://github.com/flg77/acc)
   — the runtime this extension consumes:
   * `docs/IMPLEMENTATION_subagent_clustering.md` — cluster wire shapes.
   * `docs/AUTORESEARCHER_implementation.md` — autoresearcher

@@ -37,7 +37,7 @@ the operator's Obsidian repo — `ACC Podman Desktop Plan.md`.
 
 * **Run the ACC runtime itself.**  This extension is a UI shim
   over the operator's existing
-  [agentic-cell-corpus](https://github.com/flg77/agentic-cell-corpus)
+  [agentic-cell-corpus](https://github.com/flg77/acc)
   install.  Set `acc.repoPath` in PD settings to the ACC repo
   root, or place `acc-deploy.sh` on `PATH`.
 * **Replace the TUI.**  Remote / SSH operators continue to use
@@ -96,27 +96,16 @@ npm run package          # uses podman; or `npm run package:docker`
 
 ## Panel screenshots
 
-Captures live under [`docs/screenshots/`](docs/screenshots/) — drop
-PNGs in there with the filenames below to populate this section.
-See `docs/screenshots/README.md` for the capture convention.
+Captures will land under [`docs/screenshots/`](docs/screenshots/)
+once the demo is re-run with PD attached.  Until then, the
+[`DEMO_PD_extension.md`](docs/DEMO_PD_extension.md) walkthrough
+describes each panel phase-by-phase with the exact "this should
+appear" anti-checks.
 
-<table>
-  <tr>
-    <td align="center" width="33%"><img src="docs/screenshots/stack.png" alt="Stack panel"><br><sub>Stack panel</sub></td>
-    <td align="center" width="33%"><img src="docs/screenshots/cluster.png" alt="Cluster topology"><br><sub>Cluster topology</sub></td>
-    <td align="center" width="33%"><img src="docs/screenshots/examples.png" alt="Examples"><br><sub>Examples · verification readout</sub></td>
-  </tr>
-  <tr>
-    <td align="center"><img src="docs/screenshots/manifests.png" alt="Manifest browser"><br><sub>Manifest browser</sub></td>
-    <td align="center"><img src="docs/screenshots/ailab.png" alt="AI Lab auto-detect"><br><sub>AI Lab auto-detect</sub></td>
-    <td align="center"><img src="docs/screenshots/compliance.png" alt="Compliance"><br><sub>Compliance dashboard</sub></td>
-  </tr>
-  <tr>
-    <td align="center"><img src="docs/screenshots/performance.png" alt="Performance"><br><sub>Performance dashboard</sub></td>
-    <td align="center"><img src="docs/screenshots/kaiden.png" alt="Kaiden import"><br><sub>Kaiden import (one-way)</sub></td>
-    <td></td>
-  </tr>
-</table>
+The capture convention + filename map is in
+[`docs/screenshots/README.md`](docs/screenshots/README.md) —
+contributors with a working PD install can drop PNGs in that
+directory and they'll surface here on the next README pass.
 
 ## Repository layout (v0.2)
 
@@ -145,7 +134,7 @@ acc-podman-desktop/
 
 ## See also
 
-* [agentic-cell-corpus](https://github.com/flg77/agentic-cell-corpus) — the runtime.
+* [agentic-cell-corpus](https://github.com/flg77/acc) — the runtime.
 * [ai-lab-extension](https://github.com/containers/podman-desktop-extension-ai-lab) — the model-side companion.
 * [Kaiden](https://github.com/openkaiden/kaiden) — the parallel single-developer agent workspace.
 
