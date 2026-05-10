@@ -3,6 +3,39 @@
 Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/);
 versioning per [SemVer](https://semver.org/spec/v2.0.0.html).
 
+## [0.3.1] — Unreleased — Quay.io migration + UBI 10 base
+
+Per proposal 001 in the operator's Obsidian vault
+(`AgenticCellCorpus/ACC Implementation/`).  Transitional release
+that publishes to BOTH registries — `quay.io` becomes canonical;
+`ghcr.io` stays live until v0.4.1.
+
+### Changed
+
+- **Canonical registry → quay.io.**  Released images now publish
+  to `quay.io/flg77/acc-podman-desktop:<version>` first; GHCR
+  mirror retained for the transition window (v0.3.x patches +
+  v0.4.0).
+- **Build host → acc1.**  The `build-and-push` job runs on the
+  acc1 self-hosted GitHub runner (label `acc1`); the
+  `publish-release` job stays on `ubuntu-latest` so the
+  GitHub Release object publishes even when acc1 is offline.
+- **Base image → UBI 10 minimal.**  Containerfile switches from
+  `FROM scratch` to
+  `registry.access.redhat.com/ubi10/ubi-minimal:latest` for
+  ecosystem alignment with the rest of the ACC stack.  Image
+  size grows ~10 MB → ~200 MB; PD's `/extension` extraction
+  path is unaffected.
+- **Architecture pinned to amd64.**  arm64 deferred until acc1
+  has a buildx cross-builder configured.
+
+### Added
+
+- `org.opencontainers.image.url` + `documentation` labels on the
+  Containerfile.
+- Required workflow secrets documented in `release.yml`:
+  `QUAY_USERNAME`, `QUAY_PASSWORD`.
+
 ## [0.3.0] — 2026-05-09 — Distribution + polish
 
 First installable release.  Closes the v0.3 milestone.

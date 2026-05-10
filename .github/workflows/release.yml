@@ -2,15 +2,30 @@ name: Release
 
 # Triggered by `git tag v0.x.y && git push --tags`.
 #
-# Builds the OCI image at the tagged commit, pushes it to GHCR
-# (ghcr.io/flg77/acc-podman-desktop:<tag> + :latest), and creates
-# a GitHub Release pointing operators at the canonical install
-# command:
+# Two jobs:
 #
-#   podman pull ghcr.io/flg77/acc-podman-desktop:<tag>
+#   1. build-and-push  → runs on the acc1 self-hosted runner
+#                        (label `acc1`).  Builds the OCI image
+#                        and pushes to BOTH:
+#                          - quay.io/flg77/acc-podman-desktop  (canonical)
+#                          - ghcr.io/flg77/acc-podman-desktop  (transition window
+#                                                               — dropped after v0.4.0)
 #
-# Then in Podman Desktop: Settings → Extensions → Install custom…
-# → paste the image reference.
+#   2. publish-release → runs on a GitHub-hosted runner.  Pulls
+#                        the matching `## [<version>]` section
+#                        from CHANGELOG.md and creates the
+#                        GitHub Release.  Independent of acc1
+#                        so the release-notes object publishes
+#                        even if acc1 is offline (the build job
+#                        will surface that failure separately).
+#
+# Required repo secrets (set under Settings → Secrets and
+# variables → Actions):
+#
+#   QUAY_USERNAME   = flg77+acc_podman_publisher
+#   QUAY_PASSWORD   = <robot account token>
+#
+# Per proposal 001 in the operator's Obsidian vault.
 
 on:
   push:
@@ -19,10 +34,10 @@ on:
 
 jobs:
   build-and-push:
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, acc1]
     permissions:
-      contents: write
-      packages: write
+      contents: read
+      packages: write   # ghcr.io push during transition window
     steps:
       - uses: actions/checkout@v4
 
@@ -42,32 +57,58 @@ jobs:
         id: meta
         run: |
           VERSION="${GITHUB_REF_NAME#v}"
-          IMAGE="ghcr.io/${GITHUB_REPOSITORY_OWNER,,}/acc-podman-desktop"
-          echo "version=$VERSION"             >> "$GITHUB_OUTPUT"
-          echo "image=$IMAGE"                 >> "$GITHUB_OUTPUT"
-          echo "tag=$IMAGE:$VERSION"          >> "$GITHUB_OUTPUT"
-          echo "latest=$IMAGE:latest"         >> "$GITHUB_OUTPUT"
+          QUAY="quay.io/flg77/acc-podman-desktop"
+          GHCR="ghcr.io/${GITHUB_REPOSITORY_OWNER,,}/acc-podman-desktop"
+          {
+            echo "version=$VERSION"
+            echo "quay_tag=$QUAY:$VERSION"
+            echo "quay_latest=$QUAY:latest"
+            echo "ghcr_tag=$GHCR:$VERSION"
+            echo "ghcr_latest=$GHCR:latest"
+          } >> "$GITHUB_OUTPUT"
 
-      - name: Login to GHCR
+      - name: Login to quay.io (canonical registry)
+        uses: docker/login-action@v3
+        with:
+          registry: quay.io
+          username: ${{ secrets.QUAY_USERNAME }}
+          password: ${{ secrets.QUAY_PASSWORD }}
+
+      - name: Login to GHCR (transition window — dropped after v0.4.0)
         uses: docker/login-action@v3
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Build + push OCI image
+      - name: Build + push OCI image (amd64 only)
         uses: docker/build-push-action@v5
         with:
           context: .
           file: Containerfile
+          platforms: linux/amd64
           push: true
           tags: |
-            ${{ steps.meta.outputs.tag }}
-            ${{ steps.meta.outputs.latest }}
+            ${{ steps.meta.outputs.quay_tag }}
+            ${{ steps.meta.outputs.quay_latest }}
+            ${{ steps.meta.outputs.ghcr_tag }}
+            ${{ steps.meta.outputs.ghcr_latest }}
           labels: |
             org.opencontainers.image.source=https://github.com/${{ github.repository }}
             org.opencontainers.image.revision=${{ github.sha }}
             org.opencontainers.image.version=${{ steps.meta.outputs.version }}
+
+  publish-release:
+    needs: build-and-push
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Compute version
+        id: meta
+        run: echo "version=${GITHUB_REF_NAME#v}" >> "$GITHUB_OUTPUT"
 
       - name: Extract release notes from CHANGELOG.md
         id: notes
@@ -84,7 +125,10 @@ jobs:
           {
             echo "Install via Podman Desktop → Settings → Extensions → Install custom…"
             echo
-            echo "Image: \`${{ steps.meta.outputs.tag }}\`"
+            echo "Canonical image: \`quay.io/flg77/acc-podman-desktop:${VERSION}\`"
+            echo
+            echo "Mirror (transition window — dropped after v0.4.0):"
+            echo "\`ghcr.io/flg77/acc-podman-desktop:${VERSION}\`"
             echo
             cat release-notes.md
           } > final-notes.md
