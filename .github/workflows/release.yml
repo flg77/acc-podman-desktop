@@ -18,6 +18,10 @@ name: Release
 # the trade-off is that acc1 outage blocks releases.  Mitigation:
 # operator re-tags / re-fires the workflow when acc1 returns.
 #
+# acc1 runs podman, NOT Docker — the workflow uses Red Hat's
+# buildah/podman actions (redhat-actions/*) instead of docker/*
+# so no Docker daemon is required on the runner.
+#
 # Required repo secrets (set under Settings → Secrets and
 # variables → Actions):
 #
@@ -52,50 +56,58 @@ jobs:
       - name: Build the extension
         run: npm run build
 
-      - name: Compute version + tags
+      - name: Compute version
         id: meta
         run: |
-          VERSION="${GITHUB_REF_NAME#v}"
-          QUAY="quay.io/flg77/acc-podman-desktop"
-          GHCR="ghcr.io/${GITHUB_REPOSITORY_OWNER,,}/acc-podman-desktop"
-          {
-            echo "version=$VERSION"
-            echo "quay_tag=$QUAY:$VERSION"
-            echo "quay_latest=$QUAY:latest"
-            echo "ghcr_tag=$GHCR:$VERSION"
-            echo "ghcr_latest=$GHCR:latest"
-          } >> "$GITHUB_OUTPUT"
+          echo "version=${GITHUB_REF_NAME#v}" >> "$GITHUB_OUTPUT"
+
+      # acc1 runs podman (RHEL/UBI), not Docker — use the
+      # Red Hat-maintained buildah/podman actions so we don't
+      # need a Docker daemon on the runner.
 
       - name: Login to quay.io (canonical registry)
-        uses: docker/login-action@v3
+        uses: redhat-actions/podman-login@v1
         with:
           registry: quay.io
           username: ${{ secrets.QUAY_USERNAME }}
           password: ${{ secrets.QUAY_PASSWORD }}
 
       - name: Login to GHCR (transition window — dropped after v0.4.0)
-        uses: docker/login-action@v3
+        uses: redhat-actions/podman-login@v1
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Build + push OCI image (amd64 only)
-        uses: docker/build-push-action@v5
+      - name: Build OCI image (amd64 only)
+        id: build
+        uses: redhat-actions/buildah-build@v2
         with:
+          containerfiles: ./Containerfile
           context: .
-          file: Containerfile
-          platforms: linux/amd64
-          push: true
+          archs: amd64
+          image: acc-podman-desktop
           tags: |
-            ${{ steps.meta.outputs.quay_tag }}
-            ${{ steps.meta.outputs.quay_latest }}
-            ${{ steps.meta.outputs.ghcr_tag }}
-            ${{ steps.meta.outputs.ghcr_latest }}
+            ${{ steps.meta.outputs.version }}
+            latest
           labels: |
             org.opencontainers.image.source=https://github.com/${{ github.repository }}
             org.opencontainers.image.revision=${{ github.sha }}
             org.opencontainers.image.version=${{ steps.meta.outputs.version }}
+
+      - name: Push to quay.io (canonical)
+        uses: redhat-actions/push-to-registry@v2
+        with:
+          image: ${{ steps.build.outputs.image }}
+          tags: ${{ steps.build.outputs.tags }}
+          registry: quay.io/flg77
+
+      - name: Push to GHCR (transition mirror)
+        uses: redhat-actions/push-to-registry@v2
+        with:
+          image: ${{ steps.build.outputs.image }}
+          tags: ${{ steps.build.outputs.tags }}
+          registry: ghcr.io/${{ github.repository_owner }}
 
   publish-release:
     needs: build-and-push
