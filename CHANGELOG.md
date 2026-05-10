@@ -16,10 +16,11 @@ that publishes to BOTH registries — `quay.io` becomes canonical;
   to `quay.io/flg77/acc-podman-desktop:<version>` first; GHCR
   mirror retained for the transition window (v0.3.x patches +
   v0.4.0).
-- **Build host → acc1.**  The `build-and-push` job runs on the
-  acc1 self-hosted GitHub runner (label `acc1`); the
-  `publish-release` job stays on `ubuntu-latest` so the
-  GitHub Release object publishes even when acc1 is offline.
+- **Build host → acc1.**  Both `build-and-push` and
+  `publish-release` run on the acc1 self-hosted GitHub runner
+  (label `acc1`) — RHEL/UBI 10 throughout the workflow for
+  ecosystem alignment.  Trade-off: acc1 outage blocks releases;
+  operator re-tags when acc1 returns.
 - **Base image → UBI 10 minimal.**  Containerfile switches from
   `FROM scratch` to
   `registry.access.redhat.com/ubi10/ubi-minimal:latest` for
