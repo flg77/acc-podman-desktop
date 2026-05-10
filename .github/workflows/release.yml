@@ -2,22 +2,21 @@ name: Release
 
 # Triggered by `git tag v0.x.y && git push --tags`.
 #
-# Two jobs:
+# Two jobs, both on the acc1 self-hosted runner:
 #
-#   1. build-and-push  → runs on the acc1 self-hosted runner
-#                        (label `acc1`).  Builds the OCI image
-#                        and pushes to BOTH:
+#   1. build-and-push  → builds the OCI image and pushes to BOTH:
 #                          - quay.io/flg77/acc-podman-desktop  (canonical)
 #                          - ghcr.io/flg77/acc-podman-desktop  (transition window
 #                                                               — dropped after v0.4.0)
 #
-#   2. publish-release → runs on a GitHub-hosted runner.  Pulls
-#                        the matching `## [<version>]` section
-#                        from CHANGELOG.md and creates the
-#                        GitHub Release.  Independent of acc1
-#                        so the release-notes object publishes
-#                        even if acc1 is offline (the build job
-#                        will surface that failure separately).
+#   2. publish-release → pulls the matching `## [<version>]` section
+#                        from CHANGELOG.md and creates the GitHub
+#                        Release via `gh release create`.
+#
+# Both jobs run on RHEL UBI 10 (acc1 host) for ecosystem alignment.
+# GitHub doesn't offer UBI-hosted runners, so we keep both on acc1;
+# the trade-off is that acc1 outage blocks releases.  Mitigation:
+# operator re-tags / re-fires the workflow when acc1 returns.
 #
 # Required repo secrets (set under Settings → Secrets and
 # variables → Actions):
@@ -100,7 +99,7 @@ jobs:
 
   publish-release:
     needs: build-and-push
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, acc1]
     permissions:
       contents: write
     steps:
