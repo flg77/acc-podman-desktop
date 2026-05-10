@@ -21,6 +21,10 @@ that publishes to BOTH registries — `quay.io` becomes canonical;
   (label `acc1`) — RHEL/UBI 10 throughout the workflow for
   ecosystem alignment.  Trade-off: acc1 outage blocks releases;
   operator re-tags when acc1 returns.
+- **Image build via buildah/podman.**  Workflow now uses
+  Red Hat's `redhat-actions/podman-login` +
+  `redhat-actions/buildah-build` + `redhat-actions/push-to-registry`
+  instead of `docker/*` — acc1 runs podman, not Docker.
 - **Base image → UBI 10 minimal.**  Containerfile switches from
   `FROM scratch` to
   `registry.access.redhat.com/ubi10/ubi-minimal:latest` for
