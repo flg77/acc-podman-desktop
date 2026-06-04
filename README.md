@@ -141,6 +141,7 @@ This extension is the desktop surface of a small family of repositories:
 | [`flg77/acc`](https://github.com/flg77/acc) | The ACC runtime, operator, TUI/WebGUI, and the `acc-pkg` toolchain. This extension is a UI shim over your local install of it. |
 | [`flg77/acc-ecosystem`](https://github.com/flg77/acc-ecosystem) | Public registry of `@acc/*` role packs. The Manifest Browser surfaces roles installed from it; see the registry to discover or publish more. |
 | `flg77/acc-podman-desktop` | **This repo** — run, govern, and browse roles for an ACC collective from inside Podman Desktop. |
+| [`flg77/acc-web-project`](https://github.com/flg77/acc-web-project) | The project website — intro, operations guide, and the `/roles` marketplace. |
 
 The 7 CONTROL roles ship in core; every other role is a signed package
 from the ecosystem registry. See the core repo's
