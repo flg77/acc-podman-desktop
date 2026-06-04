@@ -132,9 +132,25 @@ acc-podman-desktop/
 └── README.md                     — this file
 ```
 
+## Part of the ACC ecosystem
+
+This extension is the desktop surface of a small family of repositories:
+
+| Repository | What it is |
+|---|---|
+| [`flg77/acc`](https://github.com/flg77/acc) | The ACC runtime, operator, TUI/WebGUI, and the `acc-pkg` toolchain. This extension is a UI shim over your local install of it. |
+| [`flg77/acc-ecosystem`](https://github.com/flg77/acc-ecosystem) | Public registry of `@acc/*` role packs. The Manifest Browser surfaces roles installed from it; see the registry to discover or publish more. |
+| `flg77/acc-podman-desktop` | **This repo** — run, govern, and browse roles for an ACC collective from inside Podman Desktop. |
+
+The 7 CONTROL roles ship in core; every other role is a signed package
+from the ecosystem registry. See the core repo's
+[Role & Package Ecosystem](https://github.com/flg77/acc#role--package-ecosystem)
+overview for how packs are discovered, verified, and installed.
+
 ## See also
 
 * [agentic-cell-corpus](https://github.com/flg77/acc) — the runtime.
+* [acc-ecosystem](https://github.com/flg77/acc-ecosystem) — the `@acc/*` role-pack registry.
 * [ai-lab-extension](https://github.com/containers/podman-desktop-extension-ai-lab) — the model-side companion.
 * [Kaiden](https://github.com/openkaiden/kaiden) — the parallel single-developer agent workspace.
 
