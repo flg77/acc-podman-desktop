@@ -21,6 +21,7 @@ import { registerClusterTopology } from './cluster/topology';
 import { registerExamples } from './examples/registry';
 import { registerExamplesPanel } from './examples/panel';
 import { registerManifestBrowser } from './manifests/panel';
+import { registerCollectivesPanel } from './collectives/panel';
 import { registerAiLabPanel } from './ailab/panel';
 import { registerCompliancePanel } from './compliance/panel';
 import { registerPerformancePanel } from './performance/panel';
@@ -105,6 +106,7 @@ export async function activate(
     ...registerExamples({ paths, log }),
     ...registerExamplesPanel(paths, log),
     ...registerManifestBrowser(paths, log),
+    ...registerCollectivesPanel(paths, log),
     ...registerAiLabPanel(paths, log),
     ...registerCompliancePanel(paths, log),
     ...registerPerformancePanel(paths, log),

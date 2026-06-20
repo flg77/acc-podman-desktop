@@ -3,6 +3,24 @@
 Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/);
 versioning per [SemVer](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Added
+
+- **Collective preset picker** (`ACC: Pick + apply a collective
+  preset`).  Browses the runtime repo's `collectives/` agentset
+  presets — each card shows the declared agents (role × cluster ×
+  model × replicas) + required family packs parsed from the
+  `AgentCollectiveSpec` YAML — and exposes two actions that shell
+  `acc-deploy.sh`: **Dry-run** (`apply --dry-run <name>`, preview the
+  reconcile diff) and **Apply** (`apply <name>`, synthesize + bring
+  up the agentset), with a live stdout/stderr tail + Stop button.
+  Closes the biggest "compose an agentset" parity gap — the
+  declarative replacement for the legacy `CODING_SPLIT=true
+  ./acc-deploy.sh up` env profiles — surfaced in the runtime-parity
+  audit.  New `src/collectives/{loader,panel}.ts`; 9 loader tests
+  (244 total).
+
 ## [0.3.1] — 2026-05-10 — Quay.io migration + UBI 10 base
 
 Per proposal 001 in the operator's Obsidian vault

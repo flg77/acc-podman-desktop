@@ -89,6 +89,7 @@ npm run package          # uses podman; or `npm run package:docker`
 | `ACC: Show cluster topology` | Live NATS-driven cluster topology with 30 s grace window. |
 | `ACC: Open examples panel` | Coding-split + autoresearcher demos with live log + verification readout. |
 | `ACC: Browse roles, skills + MCPs` | Read-only manifest browser with risk pills + "Open in editor". |
+| `ACC: Pick + apply a collective preset` | Browse `collectives/` agentset presets (agents × clusters × models); Dry-run or Apply via `acc-deploy.sh apply <name>` with live log. |
 | `ACC: Detect AI Lab Model Services` | One-click "Wire to deploy/.env as ACC_OPENAI_BASE_URL" — the cross-extension story. |
 | `ACC: Open compliance dashboard` | OWASP-LLM table, oversight queue (Approve/Reject), Cat-A/B per-agent triggers. |
 | `ACC: Open performance dashboard` | Per-skill / per-MCP capability stats, drift sparkline, cost-cap progress. |
@@ -120,11 +121,12 @@ acc-podman-desktop/
 │   ├── cluster/                  — NATS subscriber + aggregator + renderer
 │   ├── examples/                 — runner + verification + panel
 │   ├── manifests/                — role / skill / MCP loader + browser
+│   ├── collectives/              — agentset preset loader + apply picker
 │   ├── ailab/                    — REST + podman-ps discovery + wire-env
 │   ├── compliance/               — OWASP / oversight / Cat-A aggregator + panel
 │   ├── performance/              — capability_stats + drift + cost-cap
 │   └── kaiden/                   — kdn workspace import (one-way)
-├── tests/                       — vitest, 199 cases
+├── tests/                       — vitest, 244 cases
 ├── docs/
 │   ├── EXTENSION_implementation.md — module + wire-protocol reference
 │   └── DEMO_PD_extension.md       — operator walkthrough
