@@ -83,6 +83,11 @@
         "category": "ACC"
       },
       {
+        "command": "acc.collectives.show",
+        "title": "ACC: Pick + apply a collective preset",
+        "category": "ACC"
+      },
+      {
         "command": "acc.ailab.show",
         "title": "ACC: Detect AI Lab Model Services",
         "category": "ACC"
