@@ -3,7 +3,7 @@
 Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/);
 versioning per [SemVer](https://semver.org/spec/v2.0.0.html).
 
-## [0.3.1] — Unreleased — Quay.io migration + UBI 10 base
+## [0.3.1] — 2026-05-10 — Quay.io migration + UBI 10 base
 
 Per proposal 001 in the operator's Obsidian vault
 (`AgenticCellCorpus/ACC Implementation/`).  Transitional release
