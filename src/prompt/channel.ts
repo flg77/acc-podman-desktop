@@ -10,8 +10,15 @@
  *
  * Wire shapes (audited against runtime `main`):
  *
+ * NOTE: runtime proposal 013 split the old shared `acc.{cid}.task`
+ * subject into `acc.{cid}.task.assign` (assignment) +
+ * `acc.{cid}.task.complete` (completion).  The deprecated
+ * `subject_task()` helper still resolves to `.task.assign`
+ * (acc/signals.py:244-292).  We publish on `.task.assign` and
+ * subscribe completions on `.task.complete`.
+ *
  *   TASK_ASSIGN:
- *     subject = `acc.{collective_id}.task`
+ *     subject = `acc.{collective_id}.task.assign`
  *     payload = {
  *       signal_type:      "TASK_ASSIGN",
  *       task_id:          uuid,
@@ -29,7 +36,7 @@
  *       ts:               unix-seconds,
  *     }
  *
- *   TASK_COMPLETE (subscribed on the same subject; filter by
+ *   TASK_COMPLETE (subscribed on `acc.{cid}.task.complete`; filter by
  *   signal_type + task_id):
  *     payload = { signal_type:"TASK_COMPLETE", task_id, agent_id,
  *                 blocked, block_reason, latency_ms, output, ... }
@@ -98,7 +105,7 @@ export function buildTaskAssign(opts: BuildAssignOptions): AssignBuilt {
   const innerBytes = new TextEncoder().encode(innerJson);
   const frame = msgpackEncode(innerBytes);
   return {
-    subject: `acc.${opts.collectiveId}.task`,
+    subject: `acc.${opts.collectiveId}.task.assign`,
     payload,
     frame,
     taskId,
@@ -232,7 +239,7 @@ export class PromptChannel {
       return;
     }
     this.nc = await connect({ servers: this.opts.natsUrl });
-    this.taskSub = this.nc.subscribe(`acc.${this.opts.collectiveId}.task`);
+    this.taskSub = this.nc.subscribe(`acc.${this.opts.collectiveId}.task.complete`);
     this.progressSub = this.nc.subscribe(`acc.${this.opts.collectiveId}.task.progress`);
     void this.runTaskLoop();
     void this.runProgressLoop();

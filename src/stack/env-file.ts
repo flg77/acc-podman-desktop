@@ -1,17 +1,23 @@
 /**
- * `deploy/.env` + `env/.env.*` preset operations.
+ * Repo-root `./.env` + `env/.env.*` preset operations.
  *
- * The compose file's `env_file:` directive points at `deploy/.env`,
- * so that's the canonical file the agent containers source.  Per-
- * model presets live under `env/.env.<name>` and are committed
+ * `acc-deploy.sh` drives `container/{beta,production}/podman-compose.yml`,
+ * whose `env_file:` directives all point at `../../.env` — i.e. the
+ * repo-root `./.env`.  `env/use.sh` calls it "the canonical sourced
+ * file" and `acc-deploy.sh setup` scaffolds it from `./.env.example`.
+ * That is the only env file the running stack actually sources, so
+ * that is what this module reads/writes.  (Earlier versions targeted
+ * `deploy/.env`, which the current compose no longer sources.)
+ *
+ * Per-model presets live under `env/.env.<name>` and are committed
  * (operator-shareable templates with no secrets); the operator
- * copies one into `deploy/.env` then edits API keys.
+ * copies one into `./.env` then edits API keys.
  *
  * This module is the panel's read/write surface for those files.
  * Pure-fs; no PD or NATS dependency; trivially unit-testable.
  */
 
-import { copyFile, mkdir, readdir, readFile, writeFile } from 'node:fs/promises';
+import { copyFile, readdir, readFile, writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
 
 
@@ -26,9 +32,9 @@ export interface PresetSummary {
 
 
 export interface DeployEnv {
-  /** Whole file content; `undefined` when `deploy/.env` does not exist yet. */
+  /** Whole file content; `undefined` when `./.env` does not exist yet. */
   contents: string | undefined;
-  /** Absolute path the panel writes to on save. */
+  /** Absolute path the panel writes to on save (repo-root `./.env`). */
   path: string;
 }
 
@@ -80,12 +86,12 @@ async function readPresetBlurb(path: string): Promise<string> {
 
 
 // ---------------------------------------------------------------------------
-// deploy/.env read + write + apply-preset
+// repo-root ./.env read + write + apply-preset
 // ---------------------------------------------------------------------------
 
 
 export async function readDeployEnv(repoRoot: string): Promise<DeployEnv> {
-  const path = join(repoRoot, 'deploy', '.env');
+  const path = join(repoRoot, '.env');
   try {
     const contents = await readFile(path, { encoding: 'utf-8' });
     return { contents, path };
@@ -99,13 +105,7 @@ export async function writeDeployEnv(
   repoRoot: string,
   contents: string,
 ): Promise<string> {
-  const deployDir = join(repoRoot, 'deploy');
-  try {
-    await mkdir(deployDir, { recursive: true });
-  } catch {
-    // best-effort
-  }
-  const path = join(deployDir, '.env');
+  const path = join(repoRoot, '.env');
   await writeFile(path, contents, { encoding: 'utf-8' });
   return path;
 }
@@ -113,39 +113,37 @@ export async function writeDeployEnv(
 
 export interface ApplyPresetResult {
   ok: boolean;
-  /** Path of the .bak when an existing deploy/.env was preserved. */
+  /** Path of the .bak when an existing ./.env was preserved. */
   backupPath: string | undefined;
-  /** Resolved path of the new deploy/.env. */
+  /** Resolved path of the new ./.env. */
   path: string;
   reason?: string;
 }
 
 
 /**
- * Copy `env/.env.<presetName>` into `deploy/.env`, preserving any
- * existing `deploy/.env` as `deploy/.env.bak` first.  Mirrors what
- * the `env/use.sh` shell script does so the panel's operator UX
- * matches the CLI flow exactly.
+ * Copy `env/.env.<presetName>` into repo-root `./.env`, preserving any
+ * existing `./.env` as `./.env.bak` first.  Mirrors exactly what the
+ * `env/use.sh` shell script does (it also copies into `${REPO_ROOT}/.env`
+ * and backs up to `.env.bak`) so the panel's operator UX matches the
+ * CLI flow.
  */
 export async function applyPreset(
   repoRoot: string,
   presetName: string,
 ): Promise<ApplyPresetResult> {
   const presetPath = join(repoRoot, 'env', `.env.${presetName}`);
-  const targetDir = join(repoRoot, 'deploy');
-  const targetPath = join(targetDir, '.env');
+  const targetPath = join(repoRoot, '.env');
   let backupPath: string | undefined;
 
   try {
-    await mkdir(targetDir, { recursive: true });
-
-    // Back up the existing deploy/.env if present.
+    // Back up the existing ./.env if present.
     try {
       const existing = await readFile(targetPath);
       backupPath = `${targetPath}.bak`;
       await writeFile(backupPath, existing);
     } catch {
-      // No existing deploy/.env — no backup needed.
+      // No existing ./.env — no backup needed.
     }
 
     await copyFile(presetPath, targetPath);
@@ -167,6 +165,7 @@ export type ProfileKey =
   | 'CODING_SPLIT'
   | 'AUTORESEARCHER'
   | 'MCP_ECHO'
+  | 'WEBGUI'
   | 'DETACH';
 
 
@@ -176,6 +175,7 @@ export const PROFILE_KEYS: readonly ProfileKey[] = [
   'CODING_SPLIT',
   'AUTORESEARCHER',
   'MCP_ECHO',
+  'WEBGUI',
   'DETACH',
 ];
 
@@ -194,6 +194,7 @@ export function readProfileState(envContents: string | undefined): ProfileState 
     CODING_SPLIT: false,
     AUTORESEARCHER: false,
     MCP_ECHO: false,
+    WEBGUI: false,
     DETACH: true,
   };
   if (envContents === undefined) {

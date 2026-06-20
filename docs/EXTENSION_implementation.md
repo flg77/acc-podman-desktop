@@ -306,7 +306,7 @@ patchProfileState(envContents, state): string;
 ```
 
 `applyPreset` mirrors `env/use.sh` exactly: copies
-`env/.env.<name>` → `deploy/.env`, backing up any existing file
+`env/.env.<name>` → `./.env`, backing up any existing file
 as `.bak`. Operators using either path see the same effect.
 
 `patchProfileState` is **conservative**: existing
@@ -329,9 +329,9 @@ returns `[]` when podman is missing rather than crashing.
 2. **Containers table** — `acc-*` containers with state pill;
    refreshes every 5 s.
 3. **Profiles** — five checkboxes (TUI / CODING_SPLIT /
-   AUTORESEARCHER / MCP_ECHO / DETACH); "Save profiles" patches
-   `deploy/.env`.
-4. **`deploy/.env` editor** — preset dropdown + textarea +
+   AUTORESEARCHER / MCP_ECHO / WEBGUI / DETACH); "Save profiles" patches
+   `./.env`.
+4. **`./.env` editor** — preset dropdown + textarea +
    Save button.
 
 Same runner (PR #3) for live tail + Stop button.
@@ -340,9 +340,9 @@ Same runner (PR #3) for live tail + Stop button.
 |---|---|
 | `{ type: 'refresh' }` | reload presets / env / containers |
 | `{ type: 'up' \| 'down' \| 'rebuild' \| 'status' }` | shell `acc-deploy.sh <cmd>` |
-| `{ type: 'apply-preset', preset }` | copy `env/.env.<preset>` → `deploy/.env` (with .bak) |
-| `{ type: 'save-env', contents }` | write textarea contents to `deploy/.env` |
-| `{ type: 'save-profiles', state }` | patch profile lines in `deploy/.env` |
+| `{ type: 'apply-preset', preset }` | copy `env/.env.<preset>` → `./.env` (with .bak) |
+| `{ type: 'save-env', contents }` | write textarea contents to `./.env` |
+| `{ type: 'save-profiles', state }` | patch profile lines in `./.env` |
 | `{ type: 'kill' }` | runner.kill() |
 
 | host → webview | Effect |
@@ -365,7 +365,7 @@ src/
 │   └── paths.ts                    resolve operator's ACC install
 ├── stack/
 │   ├── commands.ts (PR #1)         acc.stack.up/down/status as commands
-│   ├── env-file.ts (PR #5)         deploy/.env + env/.env.* ops
+│   ├── env-file.ts (PR #5)         ./.env + env/.env.* ops
 │   ├── status.ts (PR #5)           podman ps wrapper
 │   └── panel.ts (PR #5)            rich provisioning UI
 ├── cluster/
@@ -504,10 +504,10 @@ allowed_tools: [...]
 
 ### env-file shapes (stack panel)
 
-`deploy/.env` is consumed verbatim by the compose file's
+`./.env` is consumed verbatim by the compose file's
 `env_file:` directive; the panel updates `KEY=VALUE` lines for
 the five profile keys (`TUI`, `CODING_SPLIT`, `AUTORESEARCHER`,
-`MCP_ECHO`, `DETACH`) without touching anything else.
+`MCP_ECHO`, `WEBGUI`, `DETACH`) without touching anything else.
 
 `env/.env.<name>` files are operator-shareable presets — each
 documents one model backend's connection vars + a `# Preset for …`

@@ -21,7 +21,7 @@
 import { spawn } from 'node:child_process';
 
 
-/** Discovered model service the operator can wire to deploy/.env. */
+/** Discovered model service the operator can wire to ./.env. */
 export interface ModelService {
   /** Stable identifier — container name or AI Lab service id. */
   id: string;

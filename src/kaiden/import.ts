@@ -13,7 +13,7 @@
  *
  * Secrets-handling: env-var values + HTTP-header values are NEVER
  * carried over.  We surface the *names* (e.g. `BRAVE_API_KEY`) so
- * the operator wires them into `deploy/.env` themselves.  This is
+ * the operator wires them into `./.env` themselves.  This is
  * the heart of the "one-way / never reverse-trust" rule.
  */
 
@@ -111,7 +111,7 @@ export function buildMcpYaml(
     lines.push('# Secret references — Kaiden carried these values as env');
     lines.push("# vars / HTTP headers; the importer DELIBERATELY drops the");
     lines.push('# values and surfaces only the names.  Wire them into');
-    lines.push('# deploy/.env and reference via api_key_env / your own');
+    lines.push('# ./.env and reference via api_key_env / your own');
     lines.push('# adapter before the MCP can authenticate.');
     for (const r of refs) {
       lines.push(`#   - ${r}`);

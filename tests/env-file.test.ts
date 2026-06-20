@@ -1,5 +1,5 @@
 /**
- * deploy/.env operations + preset listing + profile patching.
+ * repo-root ./.env operations + preset listing + profile patching.
  */
 
 import { describe, it, expect, beforeEach } from 'vitest';
@@ -77,21 +77,23 @@ ACC_LLM_BACKEND=openai_compat
 
 
 // ---------------------------------------------------------------------------
-// deploy/.env read + write + applyPreset
+// repo-root ./.env read + write + applyPreset
 // ---------------------------------------------------------------------------
 
 
 describe('readDeployEnv', () => {
   it('returns undefined contents when the file does not exist', async () => {
-    const env = await readDeployEnv(fakeRepo());
+    const repo = fakeRepo();
+    const env = await readDeployEnv(repo);
     expect(env.contents).toBeUndefined();
-    expect(env.path.endsWith(join('deploy', '.env'))).toBe(true);
+    // Targets repo-root ./.env (the file acc-deploy.sh's compose sources),
+    // NOT deploy/.env.
+    expect(env.path).toBe(join(repo, '.env'));
   });
 
-  it('reads existing deploy/.env', async () => {
+  it('reads existing repo-root ./.env', async () => {
     const repo = fakeRepo();
-    mkdirSync(join(repo, 'deploy'), { recursive: true });
-    writeFileSync(join(repo, 'deploy', '.env'), 'TUI=true\n');
+    writeFileSync(join(repo, '.env'), 'TUI=true\n');
     const env = await readDeployEnv(repo);
     expect(env.contents).toBe('TUI=true\n');
   });
@@ -99,9 +101,10 @@ describe('readDeployEnv', () => {
 
 
 describe('writeDeployEnv', () => {
-  it('creates deploy/.env if missing', async () => {
+  it('creates repo-root ./.env if missing', async () => {
     const repo = fakeRepo();
     const path = await writeDeployEnv(repo, 'TUI=false\n');
+    expect(path).toBe(join(repo, '.env'));
     expect(readFileSync(path, 'utf-8')).toBe('TUI=false\n');
   });
 });
@@ -114,16 +117,16 @@ describe('applyPreset', () => {
     plantPreset(repo, 'llama', '# Preset for llama\nACC_LLM_BACKEND=openai_compat\n');
   });
 
-  it('copies the preset into deploy/.env when no prior file exists', async () => {
+  it('copies the preset into repo-root ./.env when no prior file exists', async () => {
     const result = await applyPreset(repo, 'llama');
     expect(result.ok).toBe(true);
+    expect(result.path).toBe(join(repo, '.env'));
     expect(result.backupPath).toBeUndefined();
     expect(readFileSync(result.path, 'utf-8')).toContain('ACC_LLM_BACKEND=openai_compat');
   });
 
-  it('backs up existing deploy/.env to .bak', async () => {
-    mkdirSync(join(repo, 'deploy'), { recursive: true });
-    writeFileSync(join(repo, 'deploy', '.env'), 'OLD_CONTENTS=1\n');
+  it('backs up existing ./.env to .bak', async () => {
+    writeFileSync(join(repo, '.env'), 'OLD_CONTENTS=1\n');
 
     const result = await applyPreset(repo, 'llama');
     expect(result.ok).toBe(true);
@@ -153,6 +156,7 @@ describe('readProfileState', () => {
     expect(state.CODING_SPLIT).toBe(false);
     expect(state.AUTORESEARCHER).toBe(false);
     expect(state.MCP_ECHO).toBe(false);
+    expect(state.WEBGUI).toBe(false);
   });
 
   it('parses canonical KEY=VALUE lines', () => {
@@ -222,6 +226,6 @@ describe('patchProfileState', () => {
 function makeState(over: Partial<ProfileState>): ProfileState {
   return {
     TUI: true, CODING_SPLIT: false, AUTORESEARCHER: false,
-    MCP_ECHO: false, DETACH: true, ...over,
+    MCP_ECHO: false, WEBGUI: false, DETACH: true, ...over,
   };
 }

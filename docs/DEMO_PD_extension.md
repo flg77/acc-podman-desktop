@@ -56,15 +56,15 @@ toast pointing at the settings key.  No silent half-states.
 
 Open **Stack** (left nav, PR #5).
 
-1. **Profiles** — toggle `TUI`, `MCP_ECHO`, `AUTORESEARCHER`,
+1. **Profiles** — toggle `TUI`, `MCP_ECHO`, `AUTORESEARCHER`, `WEBGUI`,
    `CODING_SPLIT`, `DETACH` checkboxes.  Click "Save profiles" — the
-   panel patches `deploy/.env` conservatively (preserves comments and
+   panel patches `./.env` conservatively (preserves comments and
    unrelated lines).
 2. **Preset** — pick a model preset from the dropdown (mirrors
-   `env/use.sh`); the panel backs up `deploy/.env` to `.env.bak`
+   `env/use.sh`); the panel backs up `./.env` to `.env.bak`
    before overwriting.
 3. **Inline editor** — for ad-hoc edits the textarea below is a
-   straight read/write of `deploy/.env`.
+   straight read/write of `./.env`.
 4. **Up** — click; the log pane streams stdout/stderr from
    `acc-deploy.sh up`.  Stop is cooperative SIGTERM (escalates to
    SIGKILL after 2 s if the process ignores it).
@@ -108,7 +108,7 @@ sol-01
 
 **Anti-check:** if the panel shows "No active clusters" while you
 know an arbiter is dispatching, the NATS subject is wrong —
-double-check `ACC_COLLECTIVE_ID` in `deploy/.env` matches the
+double-check `ACC_COLLECTIVE_ID` in `./.env` matches the
 collective id you're publishing under.
 
 ---
@@ -221,7 +221,7 @@ See `BACKLOG.md` for the v0.2 plan.
 |---|---|---|
 | "ACC install not found" toast on every command | Path resolver miss | Set `acc.installRoot` in PD settings; reload extension. |
 | Stack panel container table stays empty after Up | Profile mismatch / podman not on `$PATH` | Verify `podman ps` works from host shell; re-check profile checkboxes. |
-| Cluster topology empty during a known run | Wrong collective id | Confirm `ACC_COLLECTIVE_ID` in `deploy/.env` matches the publishing arbiter. |
+| Cluster topology empty during a known run | Wrong collective id | Confirm `ACC_COLLECTIVE_ID` in `./.env` matches the publishing arbiter. |
 | Examples panel "Verify" says "no .verification.json" | run.sh exited before writing the report | Scroll the log pane for the upstream error; common: missing API key. |
 | Manifest browser missing a role you authored | YAML parse error | `acc-cli role lint roles/<name>/role.md` — fix the YAML, the panel auto-refreshes on the next reload. |
 | "Open in editor" opens nothing | `$EDITOR` unset + no platform default | Set `$EDITOR` (e.g. `code -w`) and reload PD. |

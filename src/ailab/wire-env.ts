@@ -1,5 +1,7 @@
 /**
- * Wire an AI Lab Model Service base URL into `deploy/.env`.
+ * Wire an AI Lab Model Service base URL into repo-root `./.env`
+ * (the env file `acc-deploy.sh`'s compose actually sources; see
+ * `stack/env-file.ts`).
  *
  * Sets three variables — the headline cross-extension story:
  *
@@ -13,7 +15,7 @@
  * `patchProfileState` shape from `stack/env-file.ts`.
  */
 
-import { mkdir, readFile, writeFile } from 'node:fs/promises';
+import { readFile, writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
 
 
@@ -87,10 +89,8 @@ export async function wireBaseUrl(
   repoRoot: string,
   opts: WireBaseUrlOptions,
 ): Promise<WireResult> {
-  const targetDir = join(repoRoot, 'deploy');
-  const targetPath = join(targetDir, '.env');
+  const targetPath = join(repoRoot, '.env');
   try {
-    await mkdir(targetDir, { recursive: true });
     let existing: string | undefined;
     try {
       existing = await readFile(targetPath, { encoding: 'utf-8' });

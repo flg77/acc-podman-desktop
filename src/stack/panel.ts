@@ -1,7 +1,7 @@
 /**
  * Stack provisioning panel — first-class UI for the four
  * lifecycle commands the existing `acc.stack.*` set already
- * registers, plus inline `deploy/.env` editing + preset
+ * registers, plus inline `./.env` editing + preset
  * dropdown + profile checkboxes + live container status.
  *
  * Bidirectional message protocol with the webview:
@@ -307,11 +307,11 @@ async function handleApplyPreset(
     return;
   }
   const backupNote = result.backupPath
-    ? ` (existing deploy/.env saved to .bak)`
+    ? ` (existing ./.env saved to .bak)`
     : '';
   await postToast(
     panel,
-    `Preset applied → deploy/.env${backupNote}.  Edit API keys, then bring stack up.`,
+    `Preset applied → ./.env${backupNote}.  Edit API keys, then bring stack up.`,
     'ok',
   );
   await refreshData(panel, paths);
@@ -342,7 +342,7 @@ async function handleSaveProfiles(
   }
   const state: ProfileState = {
     TUI: false, CODING_SPLIT: false, AUTORESEARCHER: false,
-    MCP_ECHO: false, DETACH: false,
+    MCP_ECHO: false, WEBGUI: false, DETACH: false,
   };
   for (const key of PROFILE_KEYS) {
     state[key as ProfileKey] = Boolean(raw[key]);
@@ -497,7 +497,7 @@ function renderInitialHtml(): string {
     </table>
   </section>
   <section class="acc-card">
-    <h2>Profiles (deploy/.env)</h2>
+    <h2>Profiles (./.env)</h2>
     <div id="acc-profiles">${profileChecks}</div>
     <div class="acc-actions" style="margin-top: 0.5rem">
       <button data-cmd="save-profiles">Save profiles</button>
@@ -506,16 +506,16 @@ function renderInitialHtml(): string {
 </div>
 
 <section class="acc-card">
-  <h2>deploy/.env <span class="acc-deploy-path" id="acc-env-path"></span></h2>
+  <h2>./.env <span class="acc-deploy-path" id="acc-env-path"></span></h2>
   <div class="acc-presets">
     <label>Apply preset:
       <select id="acc-preset-select"><option value="">— pick a preset —</option></select>
     </label>
     <button data-cmd="apply-preset" class="acc-secondary">Apply</button>
   </div>
-  <textarea id="acc-env-textarea" spellcheck="false" placeholder="(deploy/.env not yet authored — pick a preset above or type below)"></textarea>
+  <textarea id="acc-env-textarea" spellcheck="false" placeholder="(./.env not yet authored — pick a preset above or type below)"></textarea>
   <div class="acc-actions">
-    <button data-cmd="save-env">Save deploy/.env</button>
+    <button data-cmd="save-env">Save ./.env</button>
   </div>
 </section>
 
@@ -569,7 +569,7 @@ function renderInitialHtml(): string {
       o.textContent = p.name + (p.blurb ? ' — ' + p.blurb : '');
       sel.appendChild(o);
     });
-    // deploy/.env
+    // ./.env
     document.getElementById('acc-env-textarea').value = msg.env.contents || '';
     document.getElementById('acc-env-path').textContent = msg.env.path;
     // Profile checkboxes
