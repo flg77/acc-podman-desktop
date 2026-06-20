@@ -85,11 +85,11 @@ npm run package          # uses podman; or `npm run package:docker`
 
 | Command | Panel |
 |---|---|
-| `ACC: Open stack panel` | Stack lifecycle + profile toggles + `deploy/.env` editor + live container status. |
+| `ACC: Open stack panel` | Stack lifecycle + profile toggles + `./.env` editor + live container status. |
 | `ACC: Show cluster topology` | Live NATS-driven cluster topology with 30 s grace window. |
 | `ACC: Open examples panel` | Coding-split + autoresearcher demos with live log + verification readout. |
 | `ACC: Browse roles, skills + MCPs` | Read-only manifest browser with risk pills + "Open in editor". |
-| `ACC: Detect AI Lab Model Services` | One-click "Wire to deploy/.env as ACC_OPENAI_BASE_URL" — the cross-extension story. |
+| `ACC: Detect AI Lab Model Services` | One-click "Wire to ./.env as ACC_OPENAI_BASE_URL" — the cross-extension story. |
 | `ACC: Open compliance dashboard` | OWASP-LLM table, oversight queue (Approve/Reject), Cat-A/B per-agent triggers. |
 | `ACC: Open performance dashboard` | Per-skill / per-MCP capability stats, drift sparkline, cost-cap progress. |
 | `ACC: Import MCP servers from Kaiden` | One-way import of `kdn` workspace.json with operator-supplied risk + allow-list. |

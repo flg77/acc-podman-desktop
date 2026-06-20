@@ -16,7 +16,7 @@ import {
 
 
 describe('buildTaskAssign', () => {
-  it('uses subject `acc.{cid}.task`', () => {
+  it('uses subject `acc.{cid}.task.assign` (runtime proposal-013 split)', () => {
     const built = buildTaskAssign({
       collectiveId: 'sol-01',
       taskDescription: 'hi',
@@ -24,7 +24,7 @@ describe('buildTaskAssign', () => {
       taskId: 't-1',
       ts: 1234,
     });
-    expect(built.subject).toBe('acc.sol-01.task');
+    expect(built.subject).toBe('acc.sol-01.task.assign');
   });
 
   it('emits the canonical TASK_ASSIGN envelope', () => {

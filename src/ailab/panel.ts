@@ -3,7 +3,7 @@
  *
  * Headline cross-extension story for v0.2: discover AI Lab Model
  * Services running on the host and offer one-click "Wire to
- * deploy/.env" actions.  Falls back to manual URL entry when AI Lab
+ * ./.env" actions.  Falls back to manual URL entry when AI Lab
  * isn't running.
  *
  * Bidirectional message protocol:
@@ -104,7 +104,7 @@ async function openPanel(
           type: 'error',
           message:
             'ACC repo not configured.  Set "acc.repoPath" in settings to wire ' +
-            'AI Lab into deploy/.env.',
+            'AI Lab into ./.env.',
         });
         return;
       }
@@ -121,7 +121,7 @@ async function openPanel(
         log.error(`ailab: wire failed: ${result.reason}`);
         await postSafe(panel, {
           type: 'error',
-          message: `Failed to write deploy/.env: ${result.reason}`,
+          message: `Failed to write ./.env: ${result.reason}`,
         });
       }
     }
@@ -213,7 +213,7 @@ function renderHtml(): string {
   <span class="acc-source" id="acc-source">scanning…</span>
   <button class="acc-secondary" id="acc-refresh">Refresh</button>
 </h1>
-<p>One-click wire an AI Lab inference endpoint into <code>deploy/.env</code>
+<p>One-click wire an AI Lab inference endpoint into <code>./.env</code>
    as the ACC OpenAI-compatible backend.  Falls back to manual URL entry.</p>
 
 <div class="acc-error" id="acc-error" style="display:none"></div>
@@ -226,7 +226,7 @@ function renderHtml(): string {
   <label for="acc-manual-model">Model name (optional)</label>
   <input id="acc-manual-model" placeholder="qwen3-1.7b">
   <div style="margin-top: 0.75rem;">
-    <button id="acc-manual-go">Wire to deploy/.env</button>
+    <button id="acc-manual-go">Wire to ./.env</button>
   </div>
 </div>
 
@@ -263,7 +263,7 @@ function renderHtml(): string {
     } else if (msg.type === 'error') {
       showError(msg.message || 'Unknown error');
     } else if (msg.type === 'wired') {
-      showToast('Wired ' + msg.baseUrl + ' → deploy/.env');
+      showToast('Wired ' + msg.baseUrl + ' → ./.env');
     }
   });
 
@@ -291,7 +291,7 @@ function renderHtml(): string {
         '  <div class="acc-card-url">' + esc(s.baseUrl) + '</div>' +
         '</div>' +
         '<div><button data-base="' + esc(s.baseUrl) + '" data-model="' +
-          esc(s.modelName || '') + '">Wire to deploy/.env</button></div>';
+          esc(s.modelName || '') + '">Wire to ./.env</button></div>';
       card.querySelector('button').addEventListener('click', () => {
         const baseUrl = card.querySelector('button').dataset.base;
         const modelName = card.querySelector('button').dataset.model;

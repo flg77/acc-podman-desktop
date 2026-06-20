@@ -7,7 +7,7 @@
  * allowed_tools.
  *
  * One-way only: secret values are stripped at import; only the
- * NAMES are surfaced for the operator to wire into deploy/.env.
+ * NAMES are surfaced for the operator to wire into ./.env.
  *
  * Bidirectional message protocol:
  *   webview → host:
@@ -403,7 +403,7 @@ function renderHtml(): string {
         (entry.env_var_names || []).length + (entry.header_names || []).length;
       const secrets = secretCount > 0
         ? '<div class="acc-secrets">Secrets stripped — wire these names ' +
-          'into deploy/.env yourself: ' +
+          'into ./.env yourself: ' +
           (entry.env_var_names || []).map((n) =>
             '<code>env: ' + esc(n) + '</code>').join(' ') +
           ' ' +

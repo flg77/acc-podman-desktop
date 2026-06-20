@@ -3,6 +3,38 @@
 Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/);
 versioning per [SemVer](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased] — runtime parity restore
+
+Re-aligns the extension's integration seams with the current
+`acc-spearhead` runtime after the runtime drifted ahead.  Audited
+both the filesystem/CLI seam and the NATS wire-protocol seam.
+
+### Fixed
+
+- **Prompt panel dispatch was dead against current runtime.**
+  Runtime proposal 013 split the shared `acc.{cid}.task` subject
+  into `acc.{cid}.task.assign` (assignment) +
+  `acc.{cid}.task.complete` (completion); `subject_task()` is now
+  deprecated (`acc/signals.py:244-292`).  The prompt channel still
+  published *and* subscribed on the single `acc.{cid}.task`, so
+  ad-hoc tasks never reached agents and completions never arrived.
+  Now publishes on `.task.assign` and subscribes completions on
+  `.task.complete` (`src/prompt/channel.ts`).
+- **Env editor wrote a file the live stack no longer sources.**
+  `acc-deploy.sh` drives `container/{beta,production}/podman-compose.yml`,
+  whose `env_file:` directives all point at repo-root `../../.env`
+  (`env/use.sh` calls it "the canonical sourced file").  The stack
+  panel, preset apply, and AI Lab "wire to env" all targeted
+  `deploy/.env`, which the current compose ignores — so operator
+  edits never reached the containers.  All now read/write/apply to
+  repo-root `./.env` (`src/stack/env-file.ts`, `src/ailab/wire-env.ts`).
+
+### Added
+
+- **`WEBGUI` profile toggle.**  Mirrors `acc-deploy.sh`'s new
+  `WEBGUI` / `--webgui` profile (the optional acc-webgui frontend);
+  surfaces as a checkbox in the stack panel (`src/stack/env-file.ts`).
+
 ## [0.3.1] — 2026-05-10 — Quay.io migration + UBI 10 base
 
 Per proposal 001 in the operator's Obsidian vault
